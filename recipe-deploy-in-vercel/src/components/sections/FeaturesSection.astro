@@ -1,0 +1,120 @@
+---
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/ui/card";
+import { TranslatedText } from "@/components/TranslatedText";
+---
+
+<section class="space-y-8 py-4 animate-fadeIn animation-delay-200">
+  <h2 class="text-2xl md:text-3xl font-bold text-center animate-fadeInUp animation-delay-300">
+    Características
+  </h2>
+  
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+    <Card className="feature-card animate-fadeInUp animation-delay-400">
+      <CardHeader>
+        <CardTitle className="text-xl text-primary flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-zap"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+          <TranslatedText textKey="features.performance.title" client:load />
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <p class="text-muted-foreground">
+          <TranslatedText textKey="features.performance.description" client:load />
+        </p>
+      </CardContent>
+    </Card>
+    
+    <Card className="feature-card animate-fadeInUp animation-delay-500">
+      <CardHeader>
+        <CardTitle className="text-xl text-primary flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-layers"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+          <TranslatedText textKey="features.components.title" client:load />
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <p class="text-muted-foreground">
+          <TranslatedText textKey="features.components.description" client:load />
+        </p>
+      </CardContent>
+    </Card>
+    
+    <Card className="feature-card animate-fadeInUp animation-delay-400">
+      <CardHeader>
+        <CardTitle className="text-xl text-secondary flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-languages"><path d="m5 8 6 6"></path><path d="m4 14 6-6 2-3"></path><path d="M2 5h12"></path><path d="M7 2h1"></path><path d="m22 22-5-10-5 10"></path><path d="M14 18h6"></path></svg>
+          <TranslatedText textKey="features.multilingual.title" client:load />
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <p class="text-muted-foreground">
+          <TranslatedText textKey="features.multilingual.description" client:load />
+        </p>
+      </CardContent>
+    </Card>
+    
+    <Card className="feature-card animate-fadeInUp animation-delay-500">
+      <CardHeader>
+        <CardTitle className="text-xl text-secondary flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sun-moon"><path d="M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"></path><path d="M12 8a2.83 2.83 0 0 0 4 4 4 4 0 1 1-4-4"></path><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>
+          <TranslatedText textKey="features.themes.title" client:load />
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <p class="text-muted-foreground">
+          <TranslatedText textKey="features.themes.description" client:load />
+        </p>
+      </CardContent>
+    </Card>
+  </div>
+</section>
+
+<style>
+  .feature-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px -15px var(--shadow-color);
+  }
+  
+  .feature-card:hover::before {
+    opacity: 1;
+  }
+  
+  .feature-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  @media (prefers-reduced-motion) {
+    .feature-card {
+      transition: none;
+    }
+    
+    .feature-card:hover {
+      transform: none;
+    }
+  }
+  
+  :root {
+    --shadow-color: rgba(0, 0, 0, 0.1);
+  }
+  
+  .dark {
+    --shadow-color: rgba(0, 0, 0, 0.3);
+  }
+</style> 

@@ -1,0 +1,31 @@
+---
+import { TranslatedText } from "@/components/TranslatedText";
+
+interface Props {
+  showMadeWith?: boolean;
+}
+
+const { showMadeWith = false } = Astro.props;
+---
+
+<footer
+  class="text-center text-muted-foreground text-sm py-6 animate-fadeIn animation-delay-500"
+>
+  <p>
+    © {new Date().getFullYear()} Astro Shade DX - <TranslatedText
+      textKey="footer.copyright"
+      client:load
+    />
+  </p>
+  {
+    showMadeWith && (
+      <p class="mt-2">
+        <TranslatedText textKey="footer.madeWith" client:load /> ❤️{" "}
+        <TranslatedText textKey="footer.and" client:load />{" "}
+        <a href="https://astro.build" class="text-primary hover:underline">
+          Astro
+        </a>
+      </p>
+    )
+  }
+</footer>
