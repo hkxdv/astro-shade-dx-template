@@ -1,0 +1,61 @@
+{
+  "name": "@hkxdv/astro-shade-dx-template",
+  "type": "module",
+  "version": "0.1.9",
+  "description": "Astro template with React, shadcn/ui, Bun, Biome & ESLint. Pre-configured TypeScript, Tailwind CSS, dark/light themes, and optimized DX. Run directly with 'bunx @hkxdv/astro-shade-dx-template' without installation.",
+  "author": "hkxdv",
+  "license": "MIT",
+  "keywords": [
+    "astro",
+    "bun",
+    "shadcn",
+    "react",
+    "prettier",
+    "eslint",
+    "biome",
+    "tailwindcss",
+    "template",
+    "create-template",
+    "astro-shade-dx-template"
+  ],
+  "bin": {
+    "astro-shade-dx-template": "./index.ts",
+    "create-astro-shade-dx-template": "./index.ts"
+  },
+  "create": "./index.ts",
+  "files": [
+    "index.ts",
+    "src/",
+    "templates/",
+    "tsconfig.json",
+    "README.md"
+  ],
+  "scripts": {
+    "dev": "bun index.ts",
+    "start": "bun index.ts",
+    "prepublishOnly": "node -e \"if(process.platform!=='win32')require('child_process').execSync('chmod +x index.ts')\""
+  },
+  "dependencies": {
+    "bun": "^1.2.10"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.5",
+    "bun-types": "^1.2.10",
+    "sirv-cli": "^3.0.1",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "bun": ">=1.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hkxdv/astro-shade-dx-template"
+  },
+  "bugs": {
+    "url": "https://github.com/hkxdv/astro-shade-dx-template/issues"
+  },
+  "homepage": "https://github.com/hkxdv/astro-shade-dx-template#readme",
+  "publishConfig": {
+    "access": "public"
+  }
+}
