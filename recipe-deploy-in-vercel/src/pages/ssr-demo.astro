@@ -1,0 +1,297 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Footer from "@/sections/Footer.astro";
+import {
+  Github,
+  Server,
+  Cloud,
+  Code2,
+  Cpu,
+  TerminalSquare,
+} from "lucide-react";
+
+// Esto se ejecutará en el servidor cada vez que se solicite la página
+export const prerender = false; // Forzar SSR siempre, no prerender
+
+const serverTime = new Date().toLocaleString("es-ES", {
+  timeZone: "Europe/Madrid",
+  dateStyle: "full",
+  timeStyle: "long",
+});
+
+const serverInfo = {
+  time: serverTime,
+  environment: import.meta.env.NODE_ENV || "development",
+  platform: import.meta.env.PLATFORM || "node",
+  ip: Astro.clientAddress || "No disponible",
+  runtime: Astro.request.headers.get("user-agent") || "No disponible",
+};
+
+// Configuración para Zerops
+const zeropsConfig = [
+  {
+    title: "Adaptador Node.js",
+    description: "Integración con @astrojs/node para SSR",
+  },
+  {
+    title: "Puerto 4321",
+    description: "Exposición del puerto de la aplicación Astro",
+  },
+  { title: "Auto-escalado", description: "1-3 contenedores según la demanda" },
+  {
+    title: "Despliegue Continuo",
+    description: "Integración con repositorios Git",
+  },
+];
+---
+
+<Layout
+  title="Demo SSR con Zerops - Astro Shade DX"
+  description="Demostración de Server-Side Rendering (SSR) con Astro desplegado en Zerops"
+>
+  <div class="container mx-auto px-4 py-10">
+    <div class="max-w-4xl mx-auto">
+      <div class="text-center mb-12">
+        <h1
+          class="text-5xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-violet-600 bg-clip-text text-transparent animate-gradient"
+        >
+          Astro Shade DX - Adaptador Node.js (SSR)
+        </h1>
+        <p class="text-lg text-muted-foreground max-w-2xl mx-auto">
+          Renderizado del lado del servidor con Astro y despliegue en la
+          plataforma Zerops
+        </p>
+      </div>
+
+      <!-- Información del servidor -->
+      <div
+        class="bg-card border rounded-lg p-6 mb-8 shadow-md hover:shadow-lg transition-shadow"
+      >
+        <div class="flex items-center gap-3 mb-4">
+          <Server className="h-6 w-6 text-primary" />
+          <h2 class="text-2xl font-semibold">Información del Servidor</h2>
+        </div>
+
+        <div class="grid gap-4">
+          <div
+            class="grid grid-cols-1 md:grid-cols-2 gap-2 p-3 rounded-md border bg-muted/30"
+          >
+            <span class="font-medium">Fecha y hora del servidor:</span>
+            <span class="text-primary">{serverInfo.time}</span>
+          </div>
+
+          <div
+            class="grid grid-cols-1 md:grid-cols-2 gap-2 p-3 rounded-md border bg-muted/30"
+          >
+            <span class="font-medium">Entorno:</span>
+            <span class="text-primary">{serverInfo.environment}</span>
+          </div>
+
+          <div
+            class="grid grid-cols-1 md:grid-cols-2 gap-2 p-3 rounded-md border bg-muted/30"
+          >
+            <span class="font-medium">Plataforma:</span>
+            <span class="text-primary">{serverInfo.platform}</span>
+          </div>
+
+          <div
+            class="grid grid-cols-1 md:grid-cols-2 gap-2 p-3 rounded-md border bg-muted/30"
+          >
+            <span class="font-medium">IP del Cliente:</span>
+            <span class="text-primary">{serverInfo.ip}</span>
+          </div>
+
+          <div
+            class="grid grid-cols-1 md:grid-cols-2 gap-2 p-3 rounded-md border bg-muted/30"
+          >
+            <span class="font-medium">User Agent:</span>
+            <span class="text-primary text-sm">{serverInfo.runtime}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Configuración de Zerops -->
+      <div
+        class="bg-card border rounded-lg p-6 mb-8 shadow-md hover:shadow-lg transition-shadow"
+      >
+        <div class="flex items-center gap-3 mb-6">
+          <Cloud className="h-6 w-6 text-primary" />
+          <h2 class="text-2xl font-semibold">Despliegue en Zerops</h2>
+        </div>
+
+        <p class="mb-6">
+          La plataforma <a
+            href="https://zerops.io"
+            target="_blank"
+            class="text-primary font-medium hover:underline">Zerops</a
+          > facilita el despliegue de aplicaciones Astro con SSR mediante una configuración
+          sencilla y optimizada para producción.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {
+            zeropsConfig.map((item) => (
+              <div class="border rounded-lg p-4 hover:border-primary/50 transition-colors">
+                <h3 class="font-semibold mb-1">{item.title}</h3>
+                <p class="text-sm text-muted-foreground">{item.description}</p>
+              </div>
+            ))
+          }
+        </div>
+
+        <div class="mt-6 p-4 bg-muted/40 rounded-md border">
+          <div class="flex items-center gap-2 mb-2">
+            <TerminalSquare className="h-5 w-5" />
+            <h3 class="font-semibold">Archivo zerops.yml</h3>
+          </div>
+          <pre
+            class="text-xs bg-card p-3 rounded border overflow-x-auto">
+{`project:
+  name: astro-shade-project
+  
+services:
+  - id: app
+    type: nodejs
+    buildFromGit:
+      buildCommand: |
+        corepack enable
+        bun install
+        bun run build
+      enable: true
+    hostname: app
+    minContainers: 1
+    maxContainers: 3
+    port: 4321
+    envSecrets:
+      NODE_ENV: production
+    runCommand: node ./dist/server/entry.mjs`}
+          </pre>
+        </div>
+      </div>
+
+      <!-- Configuración SSR -->
+      <div
+        class="bg-card border rounded-lg p-6 mb-8 shadow-md hover:shadow-lg transition-shadow"
+      >
+        <div class="flex items-center gap-3 mb-6">
+          <Code2 className="h-6 w-6 text-primary" />
+          <h2 class="text-2xl font-semibold">Configuración SSR con Astro</h2>
+        </div>
+
+        <p class="mb-4">
+          Para habilitar el SSR en un proyecto Astro, se requieren tres pasos
+          principales:
+        </p>
+
+        <ol class="space-y-4 mb-6">
+          <li class="flex items-start gap-3">
+            <div
+              class="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground font-medium"
+            >
+              1
+            </div>
+            <div>
+              <strong>Instalar el adaptador Node.js:</strong>
+              <pre
+                class="text-xs bg-muted p-2 rounded mt-1">bun add @astrojs/node --dev</pre>
+            </div>
+          </li>
+          <li class="flex items-start gap-3">
+            <div
+              class="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground font-medium"
+            >
+              2
+            </div>
+            <div>
+              <strong>Configurar astro.config.mjs:</strong>
+              <pre
+                class="text-xs bg-muted p-2 rounded mt-1">
+{`import node from "@astrojs/node";
+
+export default defineConfig({
+  output: "server",
+  adapter: node({
+    mode: "standalone"
+  }),
+  // ...
+});`}
+              </pre>
+            </div>
+          </li>
+          <li class="flex items-start gap-3">
+            <div
+              class="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground font-medium"
+            >
+              3
+            </div>
+            <div>
+              <strong>Configurar páginas para SSR:</strong>
+              <pre
+                class="text-xs bg-muted p-2 rounded mt-1">
+{`---
+// Asegura que esta página siempre se renderiza en el servidor
+export const prerender = false;
+
+// Ahora tienes acceso a información del servidor
+const serverTime = new Date().toLocaleString();
+const ip = Astro.clientAddress;
+---`}
+              </pre>
+            </div>
+          </li>
+        </ol>
+
+        <div
+          class="flex items-center gap-2 p-4 bg-blue-50 dark:bg-blue-950/30 rounded-md border border-blue-200 dark:border-blue-800"
+        >
+          <Cpu
+            className="h-5 w-5 text-blue-600 dark:text-blue-400 flex-shrink-0"
+          />
+          <p class="text-sm">
+            Con esta configuración, cada solicitud a esta página se procesa en
+            el servidor, generando contenido dinámico específico para cada
+            visitante.
+          </p>
+        </div>
+      </div>
+
+      <div class="flex justify-center mt-8 gap-4">
+        <a
+          href="/"
+          class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-6 py-2"
+        >
+          Volver a Inicio
+        </a>
+        <a
+          href="https://zerops.io"
+          target="_blank"
+          class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-6 py-2"
+        >
+          <Github className="w-4 h-4 mr-2" />
+          Ver proyecto en GitHub
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .animate-gradient {
+      background-size: 200%;
+      animation: gradientAnimation 8s linear infinite;
+    }
+
+    @keyframes gradientAnimation {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+  </style>
+
+  <Footer showMadeWith={true} />
+</Layout>
