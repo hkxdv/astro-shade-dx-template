@@ -1,9 +1,14 @@
 {
   "name": "@hkxdv/astro-shade-dx-template",
   "type": "module",
-  "version": "0.1.9",
+  "version": "1.0.2",
   "description": "Astro template with React, shadcn/ui, Bun, Biome & ESLint. Pre-configured TypeScript, Tailwind CSS, dark/light themes, and optimized DX. Run directly with 'bunx @hkxdv/astro-shade-dx-template' without installation.",
-  "author": "hkxdv",
+  "author": {
+    "name": "Gera Schz",
+    "username": "hkxdv",
+    "email": "hk4u.gera@gmail.com",
+    "url": "https://github.com/hkxdv"
+  },
   "license": "MIT",
   "keywords": [
     "astro",
@@ -16,36 +21,31 @@
     "tailwindcss",
     "template",
     "create-template",
-    "astro-shade-dx-template"
+    "astro-shade-dx-template",
+    "typescript-template"
   ],
   "bin": {
-    "astro-shade-dx-template": "./index.ts",
-    "create-astro-shade-dx-template": "./index.ts"
+    "astro-shade-dx-template": "./dist/index.js"
   },
-  "create": "./index.ts",
   "files": [
-    "index.ts",
-    "src/",
+    "dist/",
     "templates/",
     "tsconfig.json",
     "README.md"
   ],
   "scripts": {
     "dev": "bun index.ts",
-    "start": "bun index.ts",
-    "prepublishOnly": "node -e \"if(process.platform!=='win32')require('child_process').execSync('chmod +x index.ts')\""
-  },
-  "dependencies": {
-    "bun": "^1.2.10"
+    "build": "bun build ./index.ts --outdir dist --target node",
+    "prepublishOnly": "bun run build && node -e \"if(process.platform!=='win32')require('child_process').execSync('chmod +x dist/index.js')\""
   },
   "devDependencies": {
-    "@types/node": "^20.10.5",
+    "@types/node": "^20.17.32",
     "bun-types": "^1.2.10",
     "sirv-cli": "^3.0.1",
-    "typescript": "^5.3.3"
+    "typescript": "^5.8.3"
   },
   "engines": {
-    "bun": ">=1.0.0"
+    "bun": ">=1.2.10"
   },
   "repository": {
     "type": "git",
@@ -54,7 +54,7 @@
   "bugs": {
     "url": "https://github.com/hkxdv/astro-shade-dx-template/issues"
   },
-  "homepage": "https://github.com/hkxdv/astro-shade-dx-template#readme",
+  "homepage": "https://astro-shade-dx-template.vercel.app/",
   "publishConfig": {
     "access": "public"
   }
