@@ -1,20 +1,20 @@
-# AstroShadeDX Template - Adaptador Node.js (SSR) para Zerops
+# AstroShadeDX Template - Adaptador Vercel (SSR)
 
-Este proyecto muestra cómo configurar una aplicación [Astro](https://astro.build/) con renderizado del lado del servidor (SSR) para ser desplegada en [Zerops](https://zerops.io), una plataforma PaaS moderna que facilita el despliegue y la gestión de aplicaciones.
+Este proyecto muestra cómo configurar una aplicación [Astro](https://astro.build/) con renderizado del lado del servidor (SSR) para ser desplegada en [Vercel](https://vercel.com), una plataforma moderna que facilita el despliegue y la gestión de aplicaciones.
 
 ## Características
 
-- **Server-Side Rendering (SSR)**: Implementado con el adaptador `@astrojs/node`
-- **Zerops Ready**: Configuración completa para despliegue inmediato
+- **Server-Side Rendering (SSR)**: Implementado con el adaptador `@astrojs/vercel`
+- **Vercel Ready**: Configuración completa para despliegue inmediato
 
 ## Configuración
 
-Se han realizado las siguientes configuraciones para permitir el despliegue en Zerops:
+Se han realizado las siguientes configuraciones para permitir el despliegue en Vercel:
 
-1. **Adaptador Node.js**: Se ha añadido `@astrojs/node` para habilitar SSR
+1. **Adaptador Vercel**: Se ha añadido `@astrojs/vercel` para habilitar SSR
 
    ```bash
-   bun add -D @astrojs/node
+   bun add @astrojs/vercel
    ```
 
 2. **Output Mode**: Se ha configurado Astro en modo servidor
@@ -23,69 +23,10 @@ Se han realizado las siguientes configuraciones para permitir el despliegue en Z
    // astro.config.mjs
    export default defineConfig({
      output: "server",
-     adapter: node({
-       mode: "standalone",
-     }),
+     adapter: vercel(),
      // ...
    });
    ```
-
-3. **Archivo zerops.yml**: Define la configuración para el servicio Zerops
-
-   ```yaml
-   project:
-     name: astro-shade-project
-
-   services:
-     - id: app
-       type: nodejs
-       buildFromGit:
-         buildCommand: |
-           corepack enable
-           bun install
-           bun run build
-         enable: true
-       hostname: app
-       minContainers: 1
-       maxContainers: 3
-       port: 4321
-       envSecrets:
-         NODE_ENV: production
-       runCommand: node ./dist/server/entry.mjs
-   ```
-
-## Pasos para desplegar
-
-1. Crea una cuenta en [Zerops](https://zerops.io/)
-2. Conecta tu repositorio Git a Zerops
-3. Importa el proyecto utilizando el archivo `zerops.yml` incluido en este repositorio
-
-El servicio se configurará automáticamente con:
-
-- Servidor Node.js optimizado
-- Escalado automático de contenedores (1-3)
-- Puerto 4321 para la aplicación
-- Subdominio para acceso público
-
-## Estructura del servidor
-
-La aplicación se ejecuta como una aplicación SSR de Astro, lo que significa:
-
-- El servidor Node.js sirve páginas renderizadas dinámicamente
-- El punto de entrada del servidor es `./dist/server/entry.mjs`
-- Cada solicitud es procesada por el servidor de Astro
-- El renderizado ocurre en el servidor para cada visita
-
-## Variables de entorno
-
-El archivo `zerops.yml` incluye una configuración básica de variables de entorno:
-
-```yaml
-envSecrets:
-  NODE_ENV: production
-```
-
-Puedes añadir variables adicionales según sea necesario para tu aplicación.
 
 ## Desarrollo local
 
@@ -103,12 +44,10 @@ bun run build
 
 # Probar la build de producción localmente
 bun run preview
-
-# Iniciar el servidor de producción
-bun run start
 ```
 
 ## Recursos adicionales
 
 - [Documentación de Astro SSR](https://docs.astro.build/en/guides/server-side-rendering/)
-- [Documentación de Zerops](https://docs.zerops.io/)
+- [Adaptador de Vercel para Astro](https://docs.astro.build/en/guides/integrations-guide/vercel/)
+- [Documentación de Vercel](https://vercel.com/docs)

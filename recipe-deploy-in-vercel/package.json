@@ -1,7 +1,7 @@
 {
   "name": "astro-shade-dx-template-recipe-vercel",
   "type": "module",
-  "version": "0.1.0-rc.1",
+  "version": "1.0.2",
   "description": "Proyecto creado con AstroShadeDX Template - Demo",
   "private": true,
   "scripts": {
@@ -22,7 +22,7 @@
     "@radix-ui/react-tooltip": "^1.2.4",
     "@ridemountainpig/svgl-react": "^1.0.3",
     "@tailwindcss/vite": "^4.1.4",
-    "astro": "^5.7.7",
+    "astro": "^5.7.8",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",

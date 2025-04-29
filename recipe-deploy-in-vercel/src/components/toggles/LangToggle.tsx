@@ -14,7 +14,7 @@ import {
  * Componente para cambiar el idioma de la aplicación
  * Muestra un botón con ícono de idiomas que al hacer clic despliega un menú con opciones
  * Resalta visualmente el idioma actualmente seleccionado
- * 
+ *
  * @returns {JSX.Element} Componente de toggle de idioma
  */
 export function LangToggle() {
@@ -59,13 +59,13 @@ export function LangToggle() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem 
+        <DropdownMenuItem
           onClick={() => handleLanguageChange("es")}
           className={language === "es" ? "bg-accent" : ""}
         >
           Español
         </DropdownMenuItem>
-        <DropdownMenuItem 
+        <DropdownMenuItem
           onClick={() => handleLanguageChange("en")}
           className={language === "en" ? "bg-accent" : ""}
         >
@@ -74,4 +74,4 @@ export function LangToggle() {
       </DropdownMenuContent>
     </DropdownMenu>
   );
-} 
+}

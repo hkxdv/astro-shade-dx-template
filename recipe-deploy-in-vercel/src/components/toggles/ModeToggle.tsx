@@ -14,7 +14,7 @@ import {
  * Componente para cambiar el tema de la aplicación (claro/oscuro/sistema)
  * Muestra un botón con ícono que alterna entre sol y luna según el tema actual
  * Al hacer clic, muestra un menú desplegable con opciones de tema
- * 
+ *
  * @returns {JSX.Element} Componente de toggle de tema
  */
 export function ModeToggle() {

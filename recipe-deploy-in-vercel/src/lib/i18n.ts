@@ -17,7 +17,7 @@ export function getLanguagePreference(): Language {
   if (typeof localStorage !== "undefined" && localStorage.getItem("language")) {
     return localStorage.getItem("language") as Language;
   }
-  
+
   // Detectar el idioma del navegador
   const browserLang = navigator.language.split("-")[0];
   return browserLang === "es" ? "es" : "en";
@@ -30,9 +30,11 @@ export function getLanguagePreference(): Language {
 export function applyLanguage(lang: Language): void {
   document.documentElement.setAttribute("lang", lang);
   localStorage.setItem("language", lang);
-  
+
   // Disparar evento personalizado para que los componentes puedan reaccionar
-  document.dispatchEvent(new CustomEvent("languagechange", { detail: { language: lang } }));
+  document.dispatchEvent(
+    new CustomEvent("languagechange", { detail: { language: lang } })
+  );
 }
 
 /**
@@ -42,4 +44,4 @@ export function applyLanguage(lang: Language): void {
 export function setupLanguage(): void {
   const language = getLanguagePreference();
   applyLanguage(language);
-} 
+}
