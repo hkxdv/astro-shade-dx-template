@@ -1,0 +1,139 @@
+{
+  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
+  "files": {
+    "ignoreUnknown": true,
+    "ignore": [
+      "**/node_modules",
+      "**/dist",
+      "**/.astro",
+      "**/public",
+      "**/build",
+      "**/*.d.ts",
+      "**/coverage",
+      "**/.github"
+    ]
+  },
+  "formatter": {
+    "enabled": true,
+    "useEditorconfig": true,
+    "formatWithErrors": false,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineEnding": "lf",
+    "lineWidth": 100
+  },
+  "organizeImports": {
+    "enabled": true
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "complexity": {
+        "noExtraBooleanCast": "error",
+        "noUselessCatch": "error",
+        "noUselessThisAlias": "error"
+      },
+      "correctness": {
+        "noUnusedVariables": "warn"
+      },
+      "suspicious": {
+        "noExplicitAny": "off",
+        "noConsole": {
+          "level": "warn",
+          "options": {
+            "allow": ["warn", "error"]
+          }
+        }
+      },
+      "style": {
+        "noNonNullAssertion": "off",
+        "useConst": "error"
+      }
+    },
+    "ignore": [
+      "**/node_modules",
+      "**/dist",
+      "**/.astro",
+      "**/public",
+      "**/build",
+      "**/*.d.ts",
+      "**/coverage",
+      "**/.github"
+    ]
+  },
+  "javascript": {
+    "formatter": {
+      "jsxQuoteStyle": "double",
+      "quoteStyle": "double",
+      "trailingCommas": "es5",
+      "semicolons": "always",
+      "arrowParentheses": "always",
+      "bracketSameLine": false,
+      "bracketSpacing": true
+    }
+  },
+  "overrides": [
+    {
+      "include": ["*.astro"],
+      "formatter": {
+        "enabled": true
+      },
+      "linter": {
+        "rules": {
+          "style": {
+            "useConst": "off",
+            "useImportType": "off"
+          },
+          "suspicious": {
+            "noExplicitAny": "off"
+          }
+        }
+      }
+    },
+    {
+      "include": ["**/*.{ts,tsx}"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noNonNullAssertion": "off"
+          },
+          "suspicious": {
+            "noExplicitAny": "off"
+          }
+        }
+      }
+    },
+    {
+      "include": ["**/*.{jsx,tsx}"],
+      "linter": {
+        "rules": {
+          "a11y": {
+            "noBlankTarget": "error",
+            "useAltText": "error",
+            "useKeyWithClickEvents": "error"
+          },
+          "correctness": {
+            "noChildrenProp": "error",
+            "useExhaustiveDependencies": "warn",
+            "useHookAtTopLevel": "error",
+            "useJsxKeyInIterable": "error"
+          },
+          "security": {
+            "noDangerouslySetInnerHtmlWithChildren": "error"
+          },
+          "suspicious": {
+            "noCommentText": "error",
+            "noDuplicateJsxProps": "error",
+            "noArrayIndexKey": "warn"
+          }
+        }
+      }
+    }
+  ]
+}

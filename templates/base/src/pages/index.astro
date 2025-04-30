@@ -1,0 +1,39 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import { ModeToggle } from "@/toggles/ModeToggle";
+---
+
+<Layout title="Bienvenido a AstroShadeDX">
+  <header class="container mx-auto px-4 py-6 flex justify-between items-center">
+    <h2 class="text-xl font-bold">AstroShadeDX</h2>
+    <ModeToggle client:load />
+  </header>
+  <main class="container mx-auto px-4 py-8">
+    <h1 class="text-4xl font-bold mb-6">
+      ¡Bienvenido a tu nuevo proyecto AstroShadeDX!
+    </h1>
+    <p class="text-lg mb-4">Esta es una plantilla minimalista creada con:</p>
+    <ul class="list-disc list-inside mb-6 space-y-2">
+      <li>Astro</li>
+      <li>React</li>
+      <li>Tailwind CSS</li>
+      <li>TypeScript</li>
+      <li>shadcn/ui (componentes)</li>
+    </ul>
+    <div class="mt-8">
+      <a
+        href="https://docs.astro.build"
+        class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded"
+      >
+        Documentación de Astro
+      </a>
+    </div>
+  </main>
+</Layout>
+
+<script>
+  if (!localStorage.getItem("theme")) {
+    localStorage.setItem("theme", "dark");
+    document.documentElement.classList.add("dark");
+  }
+</script>

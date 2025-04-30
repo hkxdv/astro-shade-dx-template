@@ -1,0 +1,27 @@
+{
+  "name": "astro-shade-project",
+  "type": "module",
+  "version": "0.1.0-dev.1",
+  "description": "Proyecto creado con AstroShadeDX Template - Base",
+  "private": true,
+  "scripts": {
+    "dev": "bunx --bun astro dev",
+    "build": "bunx --bun astro build",
+    "preview": "bunx --bun astro preview"
+  },
+  "dependencies": {
+    "@astrojs/react": "^4.2.5",
+    "@tailwindcss/vite": "^4.1.4",
+    "astro": "^5.7.5",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.503.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "tailwind-merge": "^3.2.0",
+    "tailwindcss": "^4.1.4"
+  },
+  "devDependencies": {
+    "tw-animate-css": "^1.2.8"
+  }
+}

@@ -1,0 +1,37 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import HeroSection from "@/sections/HeroSection.astro";
+import TechnologiesSection from "@/sections/TechnologiesSection.astro";
+import FeaturesSection from "@/sections/FeaturesSection.astro";
+import Footer from "@/sections/Footer.astro";
+---
+
+<Layout
+  title="Astro Shade DX - Plantilla Moderna"
+  description="Plantilla moderna con Astro + shadcn/ui + Bun para aplicaciones rápidas con excelente experiencia de desarrollo"
+>
+  <div class="space-y-10 md:space-y-16">
+    <HeroSection />
+    <TechnologiesSection />
+    <FeaturesSection />
+    <Footer showMadeWith={true} />
+  </div>
+</Layout>
+
+<script>
+  /**
+   * Script para la inicialización del tema e idioma
+   * Se ejecuta en el cliente cuando la página se carga
+   */
+
+  import { getThemePreference, setupThemeObserver } from "@/lib/theme";
+  import { setupLanguage } from "@/lib/i18n";
+
+  // Configurar tema inicial
+  const isDark = getThemePreference() === "dark";
+  document.documentElement.classList[isDark ? "add" : "remove"]("dark");
+
+  // Configurar observadores y estado inicial
+  setupThemeObserver();
+  setupLanguage();
+</script>
