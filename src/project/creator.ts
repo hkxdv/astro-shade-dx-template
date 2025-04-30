@@ -21,9 +21,7 @@ export function showFinalMessage(
   console.log(
     `\n${colors.green}${colors.bright}✨ ¡Proyecto creado con éxito! ✨${colors.reset}`
   );
-  console.log(
-    `\n${colors.cyan}${colors.bright}📝 Pasos a seguir:${colors.reset}`
-  );
+  console.log(`\n${colors.cyan}${colors.bright}Pasos a seguir:${colors.reset}`);
   console.log(
     `${colors.white}   1. ${colors.cyan}cd ${projectName}${colors.reset}`
   );
@@ -32,17 +30,6 @@ export function showFinalMessage(
 
   console.log(
     `${colors.magenta}${colors.bright}🌐 Tu aplicación estará disponible en: ${colors.reset}${colors.underscore}http://localhost:4321${colors.reset}\n`
-  );
-
-  // Mostrar características instaladas
-  console.log(
-    `${colors.yellow}${colors.bright}🚀 Características instaladas:${colors.reset}`
-  );
-  console.log(
-    `${colors.white}   • ${colors.green}✓${colors.reset} Astro con soporte para React`
-  );
-  console.log(
-    `${colors.white}   • ${colors.green}✓${colors.reset} TailwindCSS configurado`
   );
 
   // Mostrar información del linter solo si se ha configurado uno
@@ -58,22 +45,9 @@ export function showFinalMessage(
     );
   }
 
-  if (templateType === "demo") {
-    console.log(
-      `${colors.white}   • ${colors.green}✓${colors.reset} Componentes UI completos (shadcn/ui)`
-    );
-  } else {
-    console.log(
-      `${colors.white}   • ${colors.green}✓${colors.reset} Componentes UI básicos`
-    );
-    console.log(
-      `${colors.white}   • ${colors.green}✓${colors.reset} Toggle de tema (claro/oscuro)`
-    );
-  }
-
   console.log("");
   console.log(
-    `${colors.cyan}${colors.bright}Gracias por usar AstroShadeDX Template! 💙${colors.reset}\n`
+    `${colors.cyan}${colors.bright}Gracias por usar Astro Shade DX Template! 💙${colors.reset}\n`
   );
 }
 
@@ -95,19 +69,9 @@ export async function createProject(options: ProjectOptions): Promise<void> {
 
     // Crear directorio del proyecto
     console.log(
-      `${colors.cyan}📁 Creando proyecto en "${colors.bright}${projectName}${colors.reset}${colors.cyan}"...${colors.reset}`
+      `\n${colors.cyan}📁 Creando proyecto en "${colors.bright}${projectName}${colors.reset}${colors.cyan}"...${colors.reset}`
     );
     mkdirSync(projectDir, { recursive: true });
-
-    // Mostrar información del tipo de template
-    console.log(
-      `${colors.magenta}🔍 Usando template "${colors.bright}${templateType}${colors.reset}${colors.magenta}"${colors.reset}`
-    );
-
-    // Mostrar información del tipo de linter
-    console.log(
-      `${colors.yellow}🧹 Configurando linter "${colors.bright}${linterType}${colors.reset}${colors.yellow}"${colors.reset}`
-    );
 
     // Definir rutas de directorios usando fileURLToPath para manejarlas dinámicamente
     const __filename = fileURLToPath(import.meta.url);
@@ -135,11 +99,6 @@ export async function createProject(options: ProjectOptions): Promise<void> {
         }
       }
     }
-
-    // Añadir logs de depuración
-    console.log(
-      `${colors.dim}🔍 Buscando templates en: ${templatesDir}${colors.reset}`
-    );
 
     const templateDir = path.join(templatesDir || "", templateType);
     const linterDir =
@@ -178,12 +137,6 @@ export async function createProject(options: ProjectOptions): Promise<void> {
     if (!existsSync(templateDir)) {
       console.error(
         `${colors.red}${colors.bright}❌ Error: El directorio del template no existe${colors.reset}`
-      );
-      console.error(
-        `${colors.yellow}Por favor, verifica que tu proyecto tenga la estructura de directorios correcta.${colors.reset}`
-      );
-      console.error(
-        `${colors.yellow}Buscando en: ${colors.dim}${templateDir}${colors.reset}`
       );
       process.exit(1);
     }

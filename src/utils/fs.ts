@@ -21,7 +21,16 @@ export function copyDirSync(src: string, dest: string): void {
   }
 
   const entries = readdirSync(src, { withFileTypes: true });
-  const skipFiles = [".git", "node_modules", ".DS_Store", "dist", ".bunfig.toml", "bun.lockb", "bun.lock"];
+  const skipFiles = [
+    ".git",
+    "node_modules",
+    ".DS_Store",
+    "dist",
+    ".bunfig.toml",
+    "bun.lockb",
+    "bun.lock",
+    ".vscode",
+  ];
 
   for (const entry of entries) {
     if (skipFiles.includes(entry.name)) continue;

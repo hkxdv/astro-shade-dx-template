@@ -11,20 +11,13 @@ import { promptConfirm, promptSelect, promptUser } from "../utils/readline";
 export async function runInteractiveMode(
   projectName: string = ""
 ): Promise<ProjectOptions> {
-  console.log(
-    `${colors.green}${colors.bright}🤖 Iniciando modo interactivo...${colors.reset}\n`
-  );
-
   // Preguntar nombre del proyecto si no se proporcionó
   const finalProjectName =
     projectName ||
     (await promptUser("Nombre del proyecto", "mi-proyecto-astro"));
 
   // Preguntar tipo de template
-  const templateOptions = [
-    "demo (template completo con todos los componentes)",
-    "base (template mínimo con lo esencial)",
-  ];
+  const templateOptions = ["demo", "base"];
   const templateAnswer = await promptSelect(
     "Elige el tipo de template:",
     templateOptions
@@ -49,19 +42,7 @@ export async function runInteractiveMode(
     linterType = "ninguno";
   }
 
-  // Mostrar resumen y confirmar
-  console.log(`\n${colors.green}${colors.bright}📋 Resumen:${colors.reset}`);
-  console.log(
-    `${colors.white}   • Nombre:${colors.reset} ${colors.bright}${finalProjectName}${colors.reset}`
-  );
-  console.log(
-    `${colors.white}   • Template:${colors.reset} ${colors.bright}${templateType}${colors.reset}`
-  );
-  console.log(
-    `${colors.white}   • Linter:${colors.reset} ${colors.bright}${linterType}${colors.reset}\n`
-  );
-
-  const confirmCreate = await promptConfirm("¿Deseas crear este proyecto?");
+  const confirmCreate = await promptConfirm("\n¿Deseas crear este proyecto?");
   if (!confirmCreate) {
     console.log(
       `\n${colors.yellow}Operación cancelada por el usuario.${colors.reset}`

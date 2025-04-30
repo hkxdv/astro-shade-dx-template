@@ -12,7 +12,6 @@ export function showHelp(): void {
   const optionsArg = colors.colorize("[opciones]", colors.dim);
 
   console.log(`
-${colors.colorize("MODO DE USO:", colors.yellow + colors.bright)}
   ${cmd} ${projectArg} ${optionsArg}
 
 ${colors.colorize("OPCIONES:", colors.yellow + colors.bright)}
@@ -50,9 +49,5 @@ ${colors.colorize(
   "NOTA:",
   colors.white + colors.bright
 )} Por defecto, no se configura ningún linter a menos que se especifique con --eslint o --biome.
-${colors.colorize(
-  "MODO INTERACTIVO:",
-  colors.white + colors.bright
-)} Si ejecutas el comando sin argumentos, entrarás en modo interactivo.
 `);
 }

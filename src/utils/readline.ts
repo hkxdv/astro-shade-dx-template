@@ -45,7 +45,7 @@ export async function promptSelect(
   question: string,
   options: string[]
 ): Promise<string> {
-  console.log(`${colors.cyan}${question}${colors.reset}`);
+  console.log(`\n${colors.cyan}${question}${colors.reset}`);
 
   options.forEach((option, index) => {
     console.log(`${colors.cyan}  ${index + 1}.${colors.reset} ${option}`);
@@ -54,14 +54,14 @@ export async function promptSelect(
   return new Promise((resolve) => {
     const rl = createInterface();
     rl.question(
-      `${colors.cyan}Elige una opción (1-${options.length})${colors.reset}: `,
+      `\n${colors.cyan}Elige una opción (1-${options.length})${colors.reset}: `,
       (answer) => {
         rl.close();
         const selection = parseInt(answer.trim(), 10);
 
         if (isNaN(selection) || selection < 1 || selection > options.length) {
           console.log(
-            `${colors.yellow}Opción inválida. Usando la opción por defecto (1).${colors.reset}`
+            `${colors.yellow}Opción inválida. Usando la opción por defecto (1).${colors.reset} \n`
           );
           resolve(options[0]);
         } else {
