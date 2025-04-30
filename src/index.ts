@@ -6,17 +6,17 @@
  *
  * @author hkxdv
  * @license MIT
- * @version 1.0.2
+ * @version 2.0.0
  */
 
 import path from "path";
-import { parseArguments } from "./src/cli/args";
-import { showBanner } from "./src/cli/banner";
-import { showHelp } from "./src/cli/help";
-import { runInteractiveMode } from "./src/cli/interactive";
-import { createProject } from "./src/project/creator";
-import { colors } from "./src/utils/colors";
-import { LinterType, TemplateType } from "./src/types";
+import { parseArguments } from "./cli/args";
+import { showBanner } from "./cli/banner";
+import { showHelp } from "./cli/help";
+import { runInteractiveMode } from "./cli/interactive";
+import { createProject } from "./project/creator";
+import { colors } from "./utils/colors";
+import { LinterType, TemplateType } from "./types";
 
 /**
  * Función principal
@@ -44,9 +44,6 @@ async function main(): Promise<void> {
     if (!projectName && !flags.interactive) {
       console.error(
         `${colors.red}${colors.bright}❌ Error: Debes proporcionar un nombre para el proyecto${colors.reset}`
-      );
-      console.log(
-        `${colors.cyan}Ejecuta 'bun index.ts --help' para ver las opciones disponibles${colors.reset}`
       );
       process.exit(1);
     }
