@@ -66,87 +66,31 @@ Astro template with React, shadcn/ui, Bun, Biome & ESLint. Pre-configured TypeSc
 - **shadcn/ui**: Beautiful, accessible components pre-configured
 - **TailwindCSS**: Utility-first CSS framework
 - **React**: Full support for React components
-- **Optional Linting**: Configure ESLint + Prettier or Biome based on your preference
+- **Optional Linting**: Configure ESLint + Prettier or Biome based on your preference (chosen interactively)
 - **Dark/Light Theme**: Fully implemented theme system
 - **Interactive CLI**: User-friendly interface to configure your project
 - **Modular Code**: Organized and maintainable structure
 
-## Installation
+## Installation & Usage
 
-You don't need to install this package permanently. You can use it directly through `bunx`:
-
-```bash
-bunx @hkxdv/astro-shade-dx-template my-project
-```
-
-## Usage
-
-### Interactive Mode
-
-Simply run the command without additional arguments to start the interactive wizard:
+You don't need to install this package permanently. Simply use `bunx` to run the interactive setup wizard:
 
 ```bash
 bunx @hkxdv/astro-shade-dx-template
 ```
 
-The wizard will guide you through the configuration of your project.
+The wizard will guide you through naming your project and selecting the template type (Demo or Base) and linter preference (Biome, ESLint, or None).
 
-### Command Line Options
+## Available Templates (Chosen Interactively)
 
-```bash
-bunx @hkxdv/astro-shade-dx-template <project-name> [options]
-```
+- **demo**: Complete template with all shadcn/ui components, page examples, theme system, and advanced UI features.
+- **base**: Minimal template with essential dependencies and basic components.
 
-**Options:**
+### Linter Options (Chosen Interactively)
 
-- `--demo` - Use the complete template with all components (default)
-- `--base` - Use the minimal template with just the essentials
-- `--eslint` - Configure ESLint + Prettier for linting
-- `--biome` - Configure Biome for linting (recommended for performance)
-- `--no-color` - Disable colors in the output
-- `--help` - Show help
-
-**Examples:**
-
-```bash
-# Demo template without linter
-bunx @hkxdv/astro-shade-dx-template my-project
-
-# Basic template with Biome
-bunx @hkxdv/astro-shade-dx-template my-project --empty --biome
-
-# Complete template with ESLint + Prettier
-bunx @hkxdv/astro-shade-dx-template my-blog --demo --eslint
-```
-
-## Available Templates
-
-- **demo**: Complete template with all shadcn/ui components, page examples, theme system, and advanced UI features
-- **base**: Minimal template with essential dependencies and basic components
-
-### Linter Options
-
-Both templates can be configured with either:
-
-- **Biome**: Single tool for formatting and linting with superior performance
-- **ESLint + Prettier**: Traditional setup with extensive rule customization
-
-## Project Structure
-
-The CLI source code is organized as follows:
-
-```
-├── src/
-│   ├── types/        # TypeScript types and interfaces
-│   ├── utils/        # Utilities for colors, file system, etc.
-│   ├── cli/          # Terminal commands and UI
-│   ├── project/      # Project creation logic
-├── templates/        # Project templates
-│   ├── base/         # Basic template
-│   ├── demo/         # Complete template
-│   └── linters/      # Linter configurations
-└── index.ts          # Entry point
-```
+- **Biome**: Single tool for formatting and linting with superior performance.
+- **ESLint + Prettier**: Traditional setup with extensive rule customization.
+- **None**: No linter configured.
 
 ---
 
@@ -220,84 +164,28 @@ Plantilla para Astro con shadcn/ui preconfigurado, soporte para React, TailwindC
 - **shadcn/ui**: Componentes hermosos y accesibles preconfigurados
 - **TailwindCSS**: Utility-first CSS framework
 - **React**: Soporte completo para componentes React
-- **Linting opcional**: Configura ESLint + Prettier o Biome según tus preferencias
+- **Linting opcional**: Configura ESLint + Prettier o Biome según tus preferencias (elegido interactivamente)
 - **Tema oscuro/claro**: Sistema de temas completamente implementado
 - **CLI interactivo**: Interfaz amigable para configurar tu proyecto
 - **Código modular**: Estructura organizada y mantenible
 
-## Instalación
+## Instalación y Uso
 
-No necesitas instalar este paquete permanentemente. Puedes usarlo directamente a través de `bunx`:
-
-```bash
-bunx @hkxdv/astro-shade-dx-template mi-proyecto
-```
-
-## Uso
-
-### Modo Interactivo
-
-Simplemente ejecuta el comando sin argumentos adicionales para iniciar el asistente interactivo:
+No necesitas instalar este paquete permanentemente. Simplemente usa `bunx` para ejecutar el asistente de configuración interactivo:
 
 ```bash
 bunx @hkxdv/astro-shade-dx-template
 ```
 
-El asistente te guiará a través de la configuración de tu proyecto.
+El asistente te guiará para nombrar tu proyecto y seleccionar el tipo de plantilla (Demo o Base) y la preferencia de linter (Biome, ESLint o Ninguno).
 
-### Opciones de Línea de Comandos
+## Plantillas disponibles (Elegidas Interactivamente)
 
-```bash
-bunx @hkxdv/astro-shade-dx-template <nombre-proyecto> [opciones]
-```
+- **demo**: Plantilla completa con todos los componentes de shadcn/ui, ejemplos de páginas, sistema de temas y características UI avanzadas.
+- **base**: Plantilla mínima con las dependencias esenciales y componentes básicos.
 
-**Opciones:**
+### Opciones de Linter (Elegidas Interactivamente)
 
-- `--demo` - Usar plantilla completa con todos los componentes (predeterminado)
-- `--empty` - Usar plantilla mínima con solo lo esencial
-- `--eslint` - Configurar ESLint + Prettier para linting
-- `--biome` - Configurar Biome para linting (recomendado para rendimiento)
-- `--no-color` - Desactivar colores en la salida
-- `--help` - Mostrar ayuda
-
-**Ejemplos:**
-
-```bash
-# Plantilla demo sin linter
-bunx @hkxdv/astro-shade-dx-template mi-proyecto
-
-# Plantilla básica con Biome
-bunx @hkxdv/astro-shade-dx-template mi-proyecto --empty --biome
-
-# Plantilla completa con ESLint + Prettier
-bunx @hkxdv/astro-shade-dx-template mi-blog --demo --eslint
-```
-
-## Plantillas disponibles
-
-- **demo**: Plantilla completa con todos los componentes de shadcn/ui, ejemplos de páginas, sistema de temas y características UI avanzadas
-- **base**: Plantilla mínima con las dependencias esenciales y componentes básicos
-
-### Opciones de Linter
-
-Ambas plantillas pueden configurarse con:
-
-- **Biome**: Herramienta única para formateo y linting con rendimiento superior
-- **ESLint + Prettier**: Configuración tradicional con amplia personalización de reglas
-
-## Estructura del Proyecto
-
-El código fuente del CLI está organizado de la siguiente manera:
-
-```
-├── src/
-│   ├── types/        # Tipos e interfaces TypeScript
-│   ├── utils/        # Utilidades para colores, sistema de archivos, etc.
-│   ├── cli/          # Comandos y UI de terminal
-│   ├── project/      # Lógica de creación de proyectos
-├── templates/        # Plantillas de proyectos
-│   ├── base/         # Plantilla básica
-│   ├── demo/         # Plantilla completa
-│   └── linters/      # Configuraciones de linters
-└── index.ts          # Punto de entrada
-```
+- **Biome**: Herramienta única para formateo y linting con rendimiento superior.
+- **ESLint + Prettier**: Configuración tradicional con amplia personalización de reglas.
+- **Ninguno**: Sin linter configurado.
