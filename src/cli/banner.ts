@@ -1,10 +1,10 @@
-import { colors } from "../utils/colors";
+import chalk from "chalk";
 
 /**
  * Muestra el banner ASCII Art
  */
 export function showBanner(): void {
-  console.log(`${colors.cyan}${colors.bright}
+  const bannerText = `
   ╔═══════════════════════════════════════════════════════════╗
   ║                                                           ║
   ║    █████╗ ███████╗████████╗██████╗  ██████╗               ║
@@ -28,9 +28,9 @@ export function showBanner(): void {
   ║    ██████╔╝██╔╝ ██╗                                       ║
   ║    ╚═════╝ ╚═╝  ╚═╝                                       ║
   ║                                                           ║
-  ╚═══════════════════════════════════════════════════════════╝${colors.reset}
-  `);
-  console.log(
-    `${colors.magenta}${colors.bright} ⚡ Plantilla moderna para desarrollo web con Astro, shadcn/ui & más ⚡${colors.reset}\n`
-  );
+  ╚═══════════════════════════════════════════════════════════╝
+  `;
+
+  console.log(chalk.blue.dim(bannerText));
+  console.log(chalk.white("⚡ Plantilla moderna para desarrollo web con Astro y shadcn/ui ⚡"));
 }

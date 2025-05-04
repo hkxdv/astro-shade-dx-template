@@ -1,9 +1,10 @@
-import path from "path";
-import { cpSync } from "fs";
-import { existsSync, readdirSync } from "fs";
-import { fileURLToPath } from "url";
-import { LinterType } from "../types";
-import { colors } from "../utils/colors";
+import { cpSync } from "node:fs";
+import { existsSync, readdirSync } from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import chalk from "chalk";
+import ora from "ora";
+import type { LinterType } from "../types";
 
 /**
  * Configura el linter en el proyecto
@@ -17,11 +18,6 @@ export async function configureLinter(
   projectDir: string
 ): Promise<void> {
   try {
-    console.log("");
-    console.log(
-      `${colors.yellow}🔧 Configurando linter "${colors.bright}${linterType}${colors.reset}${colors.yellow}"...${colors.reset} \n`
-    );
-
     // Si no se seleccionó ningún linter, salir
     if (linterType === "ninguno") {
       return;
@@ -35,26 +31,24 @@ export async function configureLinter(
       // Intentar resolverlo usando rutas absolutas
       const __filename = fileURLToPath(import.meta.url);
       const __dirname = path.dirname(__filename);
-      const altLinterDir = path.resolve(
-        __dirname,
-        "../../templates/linters",
-        actualLinterType
-      );
+      const altLinterDir = path.resolve(__dirname, "../../templates/linters", actualLinterType);
 
-      console.log(
-        `${colors.yellow}⚙️ Intentando buscar linter en: ${altLinterDir}${colors.reset}`
-      );
+      const spinner = ora({
+        text: chalk.blue.dim("Buscando configuración de linter en ruta alternativa..."),
+        color: "blue",
+      }).start();
 
       if (existsSync(altLinterDir)) {
-        console.log(
-          `${colors.green}✅ Directorio alternativo del linter encontrado${colors.reset}`
-        );
+        spinner.succeed(chalk.blue.dim("Configuración de linter encontrada"));
 
         // Copiar archivos de configuración del linter desde la ruta alternativa
         const linterFiles = readdirSync(altLinterDir);
         for (const file of linterFiles) {
           cpSync(path.join(altLinterDir, file), path.join(projectDir, file));
         }
+      } else {
+        spinner.fail(chalk.yellow("No se encontró configuración de linter"));
+        return;
       }
     } else {
       // Copiar archivos de configuración del linter desde la ruta original
@@ -67,6 +61,11 @@ export async function configureLinter(
     // Actualizar package.json para los scripts del linter
     const pkgPath = path.join(projectDir, "package.json");
     if (existsSync(pkgPath)) {
+      const updateSpinner = ora({
+        text: chalk.blue.dim("Actualizando scripts de package.json..."),
+        color: "blue",
+      }).start();
+
       const pkg = await Bun.file(pkgPath).json();
 
       pkg.devDependencies = pkg.devDependencies || {};
@@ -81,20 +80,13 @@ export async function configureLinter(
         if (existsSync(biomeJsonPath)) {
           try {
             const biomeConfig = await Bun.file(biomeJsonPath).json();
-            if (
-              biomeConfig.$schema &&
-              biomeConfig.$schema.includes("biomejs.dev/schemas/")
-            ) {
-              biomeConfig.$schema =
-                "https://biomejs.dev/schemas/1.9.4/schema.json";
-              await Bun.write(
-                biomeJsonPath,
-                JSON.stringify(biomeConfig, null, 2)
-              );
+            if (biomeConfig.$schema?.includes("biomejs.dev/schemas/")) {
+              biomeConfig.$schema = "https://biomejs.dev/schemas/1.9.4/schema.json";
+              await Bun.write(biomeJsonPath, JSON.stringify(biomeConfig, null, 2));
             }
-          } catch (err) {
-            console.error(
-              `${colors.yellow}⚠️ No se pudo actualizar la versión del schema en biome.json${colors.reset}`
+          } catch (_err) {
+            updateSpinner.warn(
+              chalk.yellow("No se pudo actualizar la versión del schema en biome.json")
             );
           }
         }
@@ -120,13 +112,10 @@ export async function configureLinter(
         pkg.devDependencies["typescript"] = "^5.8.3";
 
         // Scripts actualizados
-        pkg.scripts["format"] =
-          'prettier --write "src/**/*.{js,jsx,ts,tsx,astro}"';
-        pkg.scripts["format:check"] =
-          'prettier --check "src/**/*.{js,jsx,ts,tsx,astro}"';
+        pkg.scripts["format"] = 'prettier --write "src/**/*.{js,jsx,ts,tsx,astro}"';
+        pkg.scripts["format:check"] = 'prettier --check "src/**/*.{js,jsx,ts,tsx,astro}"';
         pkg.scripts["format:astro"] = 'prettier --write "src/**/*.astro"';
-        pkg.scripts["lint"] =
-          'eslint --ext .js,.jsx,.ts,.tsx --ignore-pattern "**/*.astro" src';
+        pkg.scripts["lint"] = 'eslint --ext .js,.jsx,.ts,.tsx --ignore-pattern "**/*.astro" src';
         pkg.scripts["lint:fix"] =
           'eslint --ext .js,.jsx,.ts,.tsx --ignore-pattern "**/*.astro" src --fix';
         pkg.scripts["lint:report"] =
@@ -134,16 +123,13 @@ export async function configureLinter(
       }
 
       await Bun.write(pkgPath, JSON.stringify(pkg, null, 2));
+      updateSpinner.succeed(chalk.blue.dim("Scripts actualizados correctamente"));
     }
-
-    console.log(
-      `${colors.green}${colors.bright}✅ Linter "${actualLinterType}" configurado con éxito${colors.reset}`
-    );
   } catch (error) {
     console.error(
-      `${colors.red}${colors.bright}❌ Error al configurar el linter: ${
-        error instanceof Error ? error.message : String(error)
-      }${colors.reset}`
+      chalk.red(
+        `\nError al configurar el linter: ${error instanceof Error ? error.message : String(error)}`
+      )
     );
     process.exit(1);
   }

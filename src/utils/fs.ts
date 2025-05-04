@@ -1,6 +1,6 @@
-import { cpSync, existsSync, mkdirSync, readdirSync } from "fs";
-import path from "path";
-import { colors } from "./colors";
+import { cpSync, existsSync, mkdirSync, readdirSync } from "node:fs";
+import path from "node:path";
+import chalk from "chalk";
 
 /**
  * Copia directorios recursivamente
@@ -10,9 +10,7 @@ import { colors } from "./colors";
  */
 export function copyDirSync(src: string, dest: string): void {
   if (!existsSync(src)) {
-    console.error(
-      `${colors.red}${colors.bright}❌ Error: El directorio de origen "${src}" no existe${colors.reset}`
-    );
+    console.error(chalk.red(`Error: El directorio de origen "${src}" no existe`));
     return;
   }
 

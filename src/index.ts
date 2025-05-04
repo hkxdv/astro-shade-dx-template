@@ -6,81 +6,47 @@
  *
  * @author hkxdv
  * @license MIT
- * @version 2.0.0
+ * @version 2.1.1
  */
 
-import path from "path";
-import { parseArguments } from "./cli/args";
+// Imports
+import chalk from "chalk";
+import ora from "ora";
 import { showBanner } from "./cli/banner";
-import { showHelp } from "./cli/help";
 import { runInteractiveMode } from "./cli/interactive";
 import { createProject } from "./project/creator";
-import { colors } from "./utils/colors";
-import { LinterType, TemplateType } from "./types";
+import type { ProjectOptions } from "./types";
 
 /**
  * Función principal
  */
 async function main(): Promise<void> {
   try {
-    // Parsear argumentos
-    const { flags, projectName } = parseArguments();
-
-    // Desactivar colores si se especifica
-    if (flags.noColor) {
-      colors.disable();
-    }
-
     // Mostrar banner
     showBanner();
 
-    // Mostrar ayuda si se solicita
-    if (flags.help) {
-      showHelp();
-      process.exit(0);
-    }
+    // Ejecutar modo interactivo
+    const options: ProjectOptions = await runInteractiveMode();
 
-    // Validar que se haya proporcionado un nombre de proyecto
-    if (!projectName && !flags.interactive) {
-      console.error(
-        `${colors.red}${colors.bright}❌ Error: Debes proporcionar un nombre para el proyecto${colors.reset}`
-      );
-      process.exit(1);
-    }
-
-    let options;
-
-    // Obtener configuración del proyecto (modo interactivo o argumentos)
-    if (flags.interactive) {
-      options = await runInteractiveMode(projectName);
-    } else {
-      // Configuración por argumentos
-      const templateType: TemplateType = flags.demo ? "demo" : "base";
-      const linterType: LinterType = flags.biome
-        ? "biome"
-        : flags.eslint
-        ? "eslint"
-        : "ninguno";
-      const currentDir = process.cwd();
-      const projectDir = path.join(currentDir, projectName);
-
-      options = {
-        projectName,
-        templateType,
-        linterType,
-        projectDir,
-      };
-    }
+    // Mostrar spinner durante la creación - estilo más sobrio
+    const spinner = ora({
+      text: chalk.blue.dim("Preparando proyecto..."),
+      color: "blue",
+    }).start();
 
     // Crear el proyecto
     await createProject(options);
+
+    // No necesitamos succeed aquí porque createProject ya muestra su propio resumen
+    spinner.stop();
   } catch (error) {
-    console.error(
-      `${colors.red}${colors.bright}❌ Error inesperado: ${
-        error instanceof Error ? error.message : String(error)
-      }${colors.reset}`
-    );
-    process.exit(1);
+    // Manejo de errores con estilo más sobrio
+    console.error(chalk.red(`\nError: ${error instanceof Error ? error.message : String(error)}`));
+
+    // Salir si hay error no relacionado con cancelación
+    if (!(error instanceof Error && error.message === "Operación cancelada")) {
+      process.exit(1);
+    }
   }
 }
 

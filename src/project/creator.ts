@@ -1,10 +1,10 @@
-import path from "path";
-import { existsSync, mkdirSync } from "fs";
-import { fileURLToPath } from "url";
-import { LinterType, ProjectOptions, TemplateType } from "../types";
-import { colors } from "../utils/colors";
+import { existsSync, mkdirSync } from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import chalk from "chalk";
+import ora from "ora";
+import type { LinterType, ProjectOptions, TemplateType } from "../types";
 import { copyDirSync } from "../utils/fs";
-import { showProgressBar } from "../utils/readline";
 import { configureLinter } from "./linter";
 
 /**
@@ -15,40 +15,34 @@ import { configureLinter } from "./linter";
  */
 export function showFinalMessage(
   projectName: string,
-  templateType: TemplateType,
+  _templateType: TemplateType,
   linterType: LinterType
 ): void {
-  console.log(
-    `\n${colors.green}${colors.bright}✨ ¡Proyecto creado con éxito! ✨${colors.reset}`
-  );
-  console.log(`\n${colors.cyan}${colors.bright}Pasos a seguir:${colors.reset}`);
-  console.log(
-    `${colors.white}   1. ${colors.cyan}cd ${projectName}${colors.reset}`
-  );
-  console.log(`${colors.white}   2. ${colors.cyan}bun i${colors.reset}`);
-  console.log(`${colors.white}   3. ${colors.cyan}bun dev${colors.reset}\n`);
+  console.log(chalk.white("\n✨ Proyecto creado con éxito ✨"));
+
+  console.log(chalk.blue.dim("\nPasos a seguir:"));
+  console.log(`   ${chalk.dim("1.")} ${chalk.blue(`cd ${projectName}`)}`);
+  console.log(`   ${chalk.dim("2.")} ${chalk.blue("bun i")}`);
+  console.log(`   ${chalk.dim("3.")} ${chalk.blue("bun dev")}`);
 
   console.log(
-    `${colors.magenta}${colors.bright}🌐 Tu aplicación estará disponible en: ${colors.reset}${colors.underscore}http://localhost:4321${colors.reset}\n`
+    `${chalk.magenta.dim("\nTu aplicación estará disponible en:")} ${chalk.underline("http://localhost:4321")}`
   );
 
   // Mostrar información del linter solo si se ha configurado uno
   if (linterType !== "ninguno") {
     console.log(
-      `${colors.white}   • ${colors.green}✓${colors.reset} ${
+      `   ${chalk.green("✓")} ${
         linterType === "biome" ? "Biome" : "ESLint + Prettier"
       } para linting y formateo`
     );
   } else {
     console.log(
-      `${colors.white}   • ${colors.yellow}○${colors.reset} Sin linter configurado ${colors.dim}(puedes añadirlo manualmente después)${colors.reset}`
+      `   ${chalk.yellow("•")} Sin linter configurado ${chalk.gray("(puedes añadirlo más tarde)")}`
     );
   }
 
-  console.log("");
-  console.log(
-    `${colors.cyan}${colors.bright}Gracias por usar Astro Shade DX Template! 💙${colors.reset}\n`
-  );
+  console.log(chalk.white("\nGracias por usar Astro Shade DX Template! 💙\n"));
 }
 
 /**
@@ -61,28 +55,31 @@ export async function createProject(options: ProjectOptions): Promise<void> {
   try {
     // Verificar si el directorio ya existe
     if (existsSync(projectDir)) {
-      console.error(
-        `${colors.red}${colors.bright}❌ Error: El directorio "${projectName}" ya existe${colors.reset}`
-      );
+      console.error(chalk.red(`\nError: El directorio "${projectName}" ya existe`));
       process.exit(1);
     }
 
     // Crear directorio del proyecto
-    console.log(
-      `\n${colors.cyan}📁 Creando proyecto en "${colors.bright}${projectName}${colors.reset}${colors.cyan}"...${colors.reset}`
-    );
+    const dirSpinner = ora({
+      text: chalk.blue(`\nCreando directorio "${projectName}"...`),
+      color: "blue",
+    }).start();
+
     mkdirSync(projectDir, { recursive: true });
+    dirSpinner.succeed(chalk.blue("Directorio creado"));
 
     // Definir rutas de directorios usando fileURLToPath para manejarlas dinámicamente
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = path.dirname(__filename);
-    let templatesDir;
+    let templatesDir: string | undefined;
+
     // Primero intentar encontrar la carpeta en la ubicación del paquete instalado
     const pkgPath = path.join(__dirname, "../..");
     // Si estamos en un paquete instalado (publicado en npm)
     if (existsSync(path.join(pkgPath, "package.json"))) {
       templatesDir = path.join(pkgPath, "templates");
     }
+
     // Si estamos en desarrollo local
     if (!templatesDir || !existsSync(templatesDir)) {
       // Buscar en ubicaciones alternativas
@@ -102,74 +99,56 @@ export async function createProject(options: ProjectOptions): Promise<void> {
 
     const templateDir = path.join(templatesDir || "", templateType);
     const linterDir =
-      linterType !== "ninguno"
-        ? path.join(templatesDir || "", "linters", linterType)
-        : "";
+      linterType !== "ninguno" ? path.join(templatesDir || "", "linters", linterType) : "";
 
     // Mostrar información del proyecto que se va a crear
+    console.log(chalk.blue.dim("\nResumen del proyecto:"));
+    console.log(`   ${chalk.dim("•")} Nombre: ${chalk.white(projectName)}`);
     console.log(
-      `\n${colors.green}${colors.bright}📋 Resumen del proyecto a crear:${colors.reset}`
+      `   ${chalk.dim("•")} Template: ${chalk.white(templateType)} ${chalk.gray(
+        templateType === "demo" ? "(completo)" : "(básico)"
+      )}`
     );
-    console.log(
-      `${colors.white}   • Nombre:${colors.reset} ${colors.bright}${projectName}${colors.reset}`
-    );
-    console.log(
-      `${colors.white}   • Template:${colors.reset} ${
-        colors.bright
-      }${templateType}${colors.reset} ${colors.dim}(${
-        templateType === "demo" ? "completo" : "básico"
-      })${colors.reset}`
-    );
-    console.log(
-      `${colors.white}   • Linter:${colors.reset} ${
-        colors.bright
-      }${linterType}${colors.reset} ${
-        linterType === "ninguno"
-          ? colors.dim + "(configurable con --eslint o --biome)" + colors.reset
-          : ""
-      }`
-    );
-    console.log(
-      `${colors.white}   • Ubicación:${colors.reset} ${colors.dim}${projectDir}${colors.reset}\n`
-    );
+    console.log(`   ${chalk.dim("•")} Linter: ${chalk.white(linterType)}`);
+    console.log(`   ${chalk.dim("•")} Ubicación: ${chalk.gray(projectDir)}\n`);
 
     // Verificar que el directorio del template existe
     if (!existsSync(templateDir)) {
-      console.error(
-        `${colors.red}${colors.bright}❌ Error: El directorio del template no existe${colors.reset}`
-      );
+      console.error(chalk.red("Error: El directorio del template no existe"));
       process.exit(1);
     }
 
     // Copiar template
-    console.log(
-      `${colors.cyan}📦 Copiando archivos del template...${colors.reset}`
-    );
+    const templateSpinner = ora({
+      text: chalk.blue("Copiando archivos del template..."),
+      color: "blue",
+    }).start();
 
-    // Mostrar barra de progreso simulada
-    const steps = 5;
-    for (let i = 0; i < steps; i++) {
-      await showProgressBar(i + 1, steps);
-      await new Promise((resolve) => setTimeout(resolve, 200));
-    }
+    // Pausa para mejor UX
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     // Copiar el template
     copyDirSync(templateDir, projectDir);
+    templateSpinner.succeed(chalk.blue("Template copiado"));
 
-    // Aplicar configuración del linter
-    await configureLinter(linterType, linterDir, projectDir);
+    // Configurar linter si es necesario
+    if (linterType !== "ninguno") {
+      const linterSpinner = ora({
+        text: chalk.blue(`Configurando ${linterType}...`),
+        color: "blue",
+      }).start();
 
-    console.log(
-      `${colors.green}${colors.bright}✅ Template copiado con éxito${colors.reset}`
-    );
+      await configureLinter(linterType, linterDir, projectDir);
+      linterSpinner.succeed(chalk.blue(`${linterType} configurado`));
+    }
 
     // Mostrar mensaje final
     showFinalMessage(projectName, templateType, linterType);
   } catch (error) {
     console.error(
-      `${colors.red}${colors.bright}❌ Error al crear el proyecto: ${
-        error instanceof Error ? error.message : String(error)
-      }${colors.reset}`
+      chalk.red(
+        `Error al crear el proyecto: ${error instanceof Error ? error.message : String(error)}`
+      )
     );
     process.exit(1);
   }

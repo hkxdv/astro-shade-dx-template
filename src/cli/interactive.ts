@@ -1,62 +1,91 @@
-import path from "path";
-import { LinterType, ProjectOptions, TemplateType } from "../types";
-import { colors } from "../utils/colors";
-import { promptConfirm, promptSelect, promptUser } from "../utils/readline";
+import path from "node:path";
+import chalk from "chalk";
+import prompts from "prompts";
+import type { ProjectOptions } from "../types";
 
 /**
  * Ejecuta el modo interactivo para configurar el proyecto
  * @param projectName Nombre del proyecto (puede estar vacío)
  * @returns Opciones del proyecto
  */
-export async function runInteractiveMode(
-  projectName: string = ""
-): Promise<ProjectOptions> {
-  // Preguntar nombre del proyecto si no se proporcionó
-  const finalProjectName =
-    projectName ||
-    (await promptUser("Nombre del proyecto", "mi-proyecto-astro"));
+export async function runInteractiveMode(projectName = ""): Promise<ProjectOptions> {
+  console.log(chalk.blue.dim("\nConfigura tu nuevo proyecto Astro:\n"));
 
-  // Preguntar tipo de template
-  const templateOptions = ["demo", "base"];
-  const templateAnswer = await promptSelect(
-    "Elige el tipo de template:",
-    templateOptions
+  // Usar prompts para una interfaz más moderna
+  const response = await prompts(
+    [
+      {
+        type: "text",
+        name: "projectName",
+        message: "¿Nombre del proyecto?",
+        initial: projectName || "mi-proyecto-astro",
+        validate: (value) => (value.trim() === "" ? "El nombre del proyecto es requerido" : true),
+      },
+      {
+        type: "select",
+        name: "templateType",
+        message: "¿Qué tipo de template deseas usar?",
+        choices: [
+          {
+            title: "Demo",
+            value: "demo",
+            description: "Template completo con todos los componentes",
+          },
+          { title: "Base", value: "base", description: "Template mínimo con solo lo esencial" },
+        ],
+        initial: 0,
+      },
+      {
+        type: "select",
+        name: "linterType",
+        message: "¿Qué linter prefieres?",
+        choices: [
+          {
+            title: "Biome",
+            value: "biome",
+            description: "Herramienta única, más rápida y moderna",
+          },
+          {
+            title: "ESLint + Prettier",
+            value: "eslint",
+            description: "Configuración tradicional y extensible",
+          },
+          {
+            title: "Ninguno",
+            value: "ninguno",
+            description: "Sin linter (puedes configurarlo más tarde)",
+          },
+        ],
+        initial: 0,
+      },
+      {
+        type: "confirm",
+        name: "confirmCreate",
+        message: "¿Confirmas crear el proyecto con esta configuración?",
+        initial: true,
+      },
+    ],
+    {
+      onCancel: () => {
+        console.log(chalk.yellow("\nOperación cancelada por el usuario."));
+        process.exit(0);
+      },
+    }
   );
-  const templateType: TemplateType = templateAnswer.startsWith("demo")
-    ? "demo"
-    : "base";
 
-  // Preguntar tipo de linter
-  const linterOptions = ["Ninguno", "ESLint + Prettier", "Biome"];
-  const linterAnswer = await promptSelect(
-    "Elige el tipo de linter:",
-    linterOptions
-  );
-
-  let linterType: LinterType;
-  if (linterAnswer === "ESLint + Prettier") {
-    linterType = "eslint";
-  } else if (linterAnswer === "Biome") {
-    linterType = "biome";
-  } else {
-    linterType = "ninguno";
-  }
-
-  const confirmCreate = await promptConfirm("\n¿Deseas crear este proyecto?");
-  if (!confirmCreate) {
-    console.log(
-      `\n${colors.yellow}Operación cancelada por el usuario.${colors.reset}`
-    );
+  // Verificar confirmación
+  if (!response.confirmCreate) {
+    console.log(chalk.yellow("\nOperación cancelada por el usuario."));
     process.exit(0);
   }
 
   const currentDir = process.cwd();
-  const projectDir = path.join(currentDir, finalProjectName);
+  const projectDir = path.join(currentDir, response.projectName);
 
   return {
-    projectName: finalProjectName,
-    templateType,
-    linterType,
+    projectName: response.projectName,
+    templateType: response.templateType,
+    linterType: response.linterType,
     projectDir,
   };
 }
