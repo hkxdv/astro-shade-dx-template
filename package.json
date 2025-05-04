@@ -1,7 +1,7 @@
 {
   "name": "@hkxdv/astro-shade-dx-template",
   "type": "module",
-  "version": "2.0.0",
+  "version": "2.1.1",
   "description": "Astro template with React, shadcn/ui, Bun, Biome & ESLint. Pre-configured TypeScript, Tailwind CSS, dark/light themes, and optimized DX. Run directly with 'bunx @hkxdv/astro-shade-dx-template' without installation.",
   "author": {
     "name": "Gera Schz",
@@ -33,12 +33,21 @@
   ],
   "scripts": {
     "dev": "bun src/index.ts",
+    "lint": "biome check src/",
+    "lint:fix": "biome check --write src/",
+    "format": "biome format src/",
+    "format:fix": "biome format --write src/",
     "build": "bun build ./src/index.ts --outdir dist --target node",
     "prepublishOnly": "bun run build && node -e \"if(process.platform!=='win32')require('child_process').execSync('chmod +x dist/index.js')\""
   },
   "devDependencies": {
+    "@biomejs/biome": "1.9.4",
     "@types/node": "^20.17.32",
+    "@types/prompts": "^2.4.9",
     "bun-types": "^1.2.10",
+    "chalk": "^5.4.1",
+    "ora": "^8.2.0",
+    "prompts": "^2.4.2",
     "sirv-cli": "^3.0.1",
     "typescript": "^5.8.3"
   },
