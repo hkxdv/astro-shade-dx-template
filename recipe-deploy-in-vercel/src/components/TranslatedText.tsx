@@ -1,4 +1,4 @@
-import { memo, useState, useEffect, type FC } from "react";
+import { memo, type FC } from "react";
 import { useTranslation, getTranslation } from "@/lib/translations";
 import type { SupportedLocale } from "@/contexts/LanguageContext";
 import { DEFAULT_LOCALE } from "@/contexts/LanguageContext";
