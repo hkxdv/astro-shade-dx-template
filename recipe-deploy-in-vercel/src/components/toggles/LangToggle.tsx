@@ -34,28 +34,41 @@ export function LangToggle({
 }: LangToggleProps) {
   /**
    * Maneja el cambio de idioma cuando el usuario selecciona una opción
-   * @param {string} targetUrl - La URL correspondiente al idioma seleccionado
+   * @param {string} linkUrl - La URL o path correspondiente al idioma seleccionado
    */
-  const handleLanguageChange = (targetUrl: string) => {
-    // Preservar parámetros de consulta al cambiar idioma
-    const currentParams = new URLSearchParams(window.location.search);
+  const handleLanguageChange = (linkUrl: string) => {
+    const currentNavigatorParams = new URLSearchParams(window.location.search);
+    let newPath: string;
 
     try {
-      // Utilizar la URL tal como viene, sin reconstruirla con window.location.origin
-      const targetUrlObj = new URL(targetUrl);
-
-      // Transferir los parámetros actuales a la nueva URL
-      for (const [key, value] of currentParams.entries()) {
-        targetUrlObj.searchParams.append(key, value);
-      }
-
-      // Navegar a la URL del idioma seleccionado con los parámetros preservados
-      window.location.href = targetUrlObj.toString();
-    } catch (error) {
-      // Si hay algún error al procesar la URL, redirigir directamente
-      console.error("Error procesando URL:", error);
-      window.location.href = targetUrl;
+      // Intenta parsear linkUrl. Si es una URL absoluta (ej. http://localhost/en/foo o https://example.com/en/foo)
+      // tomaremos su pathname y su search string.
+      const parsedLinkUrl = new URL(linkUrl);
+      newPath = parsedLinkUrl.pathname + parsedLinkUrl.search; // Combina path y search de la URL del link
+    } catch (e) {
+      // linkUrl no es una URL absoluta, asumimos que es un path (ej. "/en/foo" o "/en/foo?param=val")
+      newPath = linkUrl;
     }
+
+    // Asegurar que el newPath (ya sea de una URL parseada o directo) comience con "/" si no lo hace.
+    if (!newPath.startsWith("/")) {
+      console.warn(
+        `LangToggle: linkUrl ("${linkUrl}") transformada a path ("${newPath}") no comenzaba con '/', se ha añadido.`
+      );
+      newPath = `/${newPath}`;
+    }
+
+    // Construir la URL final usando el origin actual, el newPath.
+    // newPath puede contener sus propios parámetros de consulta (ej. /es/page?param=true)
+    const finalUrl = new URL(newPath, window.location.origin);
+
+    // Añadir los parámetros de la URL actual del navegador a la URL final.
+    // Esto fusionará los params de newPath (si los tenía) con los currentNavigatorParams.
+    currentNavigatorParams.forEach((value, key) => {
+      finalUrl.searchParams.append(key, value);
+    });
+
+    window.location.href = finalUrl.toString();
   };
 
   const getLangName = (langCode: string): string => {
