@@ -9,10 +9,7 @@ import {
   type SupportedLocale,
   DEFAULT_LOCALE,
 } from "@/contexts/LanguageContext";
-import {
-  getLocaleTranslations,
-  type NestedTranslations,
-} from "@/lib/i18n-utils";
+import { getLocaleTranslations } from "@/lib/i18n-utils";
 
 // Cargar traducciones estáticas para resolver problemas de hidratación
 import commonES from "@/locales/es/common.json";

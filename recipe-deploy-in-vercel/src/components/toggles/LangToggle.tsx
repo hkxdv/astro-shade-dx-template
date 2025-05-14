@@ -39,17 +39,23 @@ export function LangToggle({
   const handleLanguageChange = (targetUrl: string) => {
     // Preservar parámetros de consulta al cambiar idioma
     const currentParams = new URLSearchParams(window.location.search);
-    const targetUrlObj = new URL(targetUrl, window.location.origin);
 
-    console.log("Cambiando a URL:", targetUrlObj.toString());
+    try {
+      // Utilizar la URL tal como viene, sin reconstruirla con window.location.origin
+      const targetUrlObj = new URL(targetUrl);
 
-    // Transferir los parámetros actuales a la nueva URL
-    for (const [key, value] of currentParams.entries()) {
-      targetUrlObj.searchParams.append(key, value);
+      // Transferir los parámetros actuales a la nueva URL
+      for (const [key, value] of currentParams.entries()) {
+        targetUrlObj.searchParams.append(key, value);
+      }
+
+      // Navegar a la URL del idioma seleccionado con los parámetros preservados
+      window.location.href = targetUrlObj.toString();
+    } catch (error) {
+      // Si hay algún error al procesar la URL, redirigir directamente
+      console.error("Error procesando URL:", error);
+      window.location.href = targetUrl;
     }
-
-    // Navegar a la URL del idioma seleccionado con los parámetros preservados
-    window.location.href = targetUrlObj.toString();
   };
 
   const getLangName = (langCode: string): string => {

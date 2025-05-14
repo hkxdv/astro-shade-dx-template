@@ -1,7 +1,7 @@
 {
   "name": "astro-shade-dx-template-recipe-vercel",
   "type": "module",
-  "version": "2.1.3",
+  "version": "2.1.4",
   "description": "Proyecto creado con AstroShadeDX Template - Demo",
   "private": true,
   "scripts": {

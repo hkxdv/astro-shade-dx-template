@@ -71,7 +71,7 @@ const projectData: {
   projectInfo: [
     {
       name: "Demo",
-      version: "2.1.2",
+      version: "2.1.4",
     },
   ],
   tree: [

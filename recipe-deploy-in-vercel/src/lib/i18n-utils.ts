@@ -3,6 +3,40 @@
  * @module i18n-utils
  */
 
+// Importaciones estáticas para resolver advertencias de Vite
+import commonES from "@/locales/es/common.json";
+import featuresES from "@/locales/es/features.json";
+import commonEN from "@/locales/en/common.json";
+import featuresEN from "@/locales/en/features.json";
+
+/**
+ * Tipo para traducciones anidadas que permite múltiples niveles
+ */
+export type NestedTranslations = Record<
+  string,
+  string | Record<string, unknown>
+>;
+
+// Tipo para el diccionario de traducciones
+type TranslationDict = {
+  [key in "es" | "en"]: {
+    common: NestedTranslations;
+    features: NestedTranslations;
+  };
+};
+
+// Diccionario estático de traducciones
+const TRANSLATIONS: TranslationDict = {
+  es: {
+    common: commonES as NestedTranslations,
+    features: featuresES as NestedTranslations,
+  },
+  en: {
+    common: commonEN as NestedTranslations,
+    features: featuresEN as NestedTranslations,
+  },
+};
+
 /**
  * Obtener los idiomas soportados desde la configuración de Astro
  * @returns Array de códigos de idioma soportados
@@ -60,16 +94,8 @@ export function generateLocalePaths() {
  * Tipo para módulos de traducción importados dinámicamente
  */
 interface TranslationModule {
-  default: Record<string, unknown>;
+  default: NestedTranslations;
 }
-
-/**
- * Tipo para traducciones anidadas que permite múltiples niveles
- */
-export type NestedTranslations = Record<
-  string,
-  string | Record<string, unknown>
->;
 
 /**
  * Obtener todas las traducciones disponibles para un idioma
@@ -80,15 +106,17 @@ export async function getLocaleTranslations(
   locale: string
 ): Promise<NestedTranslations> {
   try {
-    // Carga manual de archivos de traducción
-    const commonModule = await import(`../locales/${locale}/common.json`);
-    const featuresModule = await import(`../locales/${locale}/features.json`);
+    // Usar las traducciones pre-importadas
+    if (locale === "es" || locale === "en") {
+      const result: NestedTranslations = {
+        ...TRANSLATIONS[locale].common,
+        ...TRANSLATIONS[locale].features,
+      };
+      return result;
+    }
 
-    // Combinamos todas las traducciones
-    return {
-      ...commonModule.default,
-      ...featuresModule.default,
-    };
+    // Fallback para idiomas no pre-importados
+    return {};
   } catch (error) {
     console.error(`Error cargando traducciones para ${locale}:`, error);
     return {};
