@@ -1,72 +1,13 @@
 ---
-import Layout from "@/layouts/Layout.astro";
-import HeroSection from "@/sections/Hero.astro";
-import TechnologiesSection from "@/sections/Technologies.astro";
-import FeaturesSection from "@/sections/Features.astro";
-import Footer from "@/sections/Footer.astro";
-import { Server } from "lucide-react";
+// Redirección desde / al idioma por defecto /es/
+import { getDefaultLocale } from "@/lib/i18n-utils";
+
+export const prerender = false;
+
+// Obtener el idioma por defecto dinámicamente
+const defaultLocale = getDefaultLocale();
+
+// Redirigir al idioma por defecto
+Astro.response.status = 302;
+Astro.response.headers.set("Location", `/${defaultLocale}/`);
 ---
-
-<Layout
-  title="Astro Shade DX - Plantilla Moderna"
-  description="Plantilla moderna con Astro + shadcn/ui + Bun para aplicaciones rápidas con excelente experiencia de desarrollo"
->
-  <div class="space-y-10 md:space-y-16">
-    <HeroSection />
-
-    <!-- Banner de SSR con Vercel -->
-    <div class="container">
-      <div
-        class="max-w-5xl mx-auto p-4 md:p-6 border border-primary/20 rounded-lg bg-primary/5 shadow-sm"
-      >
-        <div class="flex flex-col md:flex-row gap-4 items-center">
-          <div class="flex items-center gap-3 shrink-0">
-            <div class="bg-primary/20 p-2 rounded-full">
-              <Server className="h-6 w-6 text-primary" />
-            </div>
-            <div>
-              <h3 class="text-xl font-semibold flex items-center">
-                <span
-                  class="ml-2 text-xs bg-transparent border border-primary/30 px-2 py-0.5 rounded text-primary"
-                  >SSR</span
-                >
-              </h3>
-            </div>
-          </div>
-
-          <div class="flex-1 text-sm md:text-base">
-            <p>
-              Este proyecto está configurado para despliegue en <span
-                class="font-medium">Vercel</span
-              > usando el adaptador <span class="font-medium"
-                >@astrojs/vercel</span
-              >.
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <TechnologiesSection />
-    <FeaturesSection />
-    <Footer showMadeWith={true} />
-  </div>
-</Layout>
-
-<script>
-  /**
-   * Script para la inicialización del tema e idioma
-   * Se ejecuta en el cliente cuando la página se carga
-   */
-
-  import { getThemePreference, setupThemeObserver } from "@/lib/theme";
-  import { setupLanguage } from "@/lib/i18n";
-
-  // Configurar tema inicial
-  const isDark = getThemePreference() === "dark";
-  document.documentElement.classList[isDark ? "add" : "remove"]("dark");
-
-  // Configurar observadores y estado inicial
-  setupThemeObserver();
-  setupLanguage();
-</script>
