@@ -5,6 +5,7 @@ import { ModeToggle } from "@/toggles/ModeToggle";
 import { LangToggle } from "@/toggles/LangToggle";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { getSupportedLocales } from "@/lib/i18n-utils";
+import { loadTranslations, preloadAllTranslations } from "@/lib/translations";
 
 interface Props {
   title: string;
@@ -13,10 +14,16 @@ interface Props {
 }
 
 const { title, description, showSidebar = true } = Astro.props;
-const currentLang = Astro.currentLocale as string;
+const currentLang =
+  (Astro.currentLocale as string) || (Astro.params.lang as string);
 const supportedLocales = getSupportedLocales();
 const currentPath = Astro.url.pathname;
 const baseUrl = Astro.url.origin;
+
+// Cargar traducciones para el idioma actual
+if (currentLang) {
+  await loadTranslations(currentLang);
+}
 
 /**
  * Función utilitaria para crear enlaces de idioma
@@ -34,7 +41,31 @@ function createLanguageLinks(
 ) {
   return supportedLocales.map((locale) => {
     // Si es la página actual, mantener la ruta pero cambiar el idioma
-    const localePath = currentPath.replace(`/${currentLang}/`, `/${locale}/`);
+    // Asegurar que la ruta actual termina con /
+    const normalizedPath = currentPath.endsWith("/")
+      ? currentPath
+      : `${currentPath}/`;
+    const localePath = normalizedPath.replace(
+      `/${currentLang}/`,
+      `/${locale}/`
+    );
+
+    // Si no hay cambio (por ejemplo, la ruta no contiene el idioma actual), construir manualmente
+    if (localePath === normalizedPath && currentLang !== locale) {
+      const segments = normalizedPath.split("/").filter((seg) => seg);
+      // Si la ruta empieza con un idioma válido, reemplazarlo
+      if (supportedLocales.includes(segments[0])) {
+        segments[0] = locale;
+      } else {
+        // Si no hay idioma, agregarlo al principio
+        segments.unshift(locale);
+      }
+      return {
+        lang: locale,
+        url: `${baseUrl}/${segments.join("/")}`,
+      };
+    }
+
     return {
       lang: locale,
       url: new URL(localePath, baseUrl).toString(),
@@ -116,7 +147,19 @@ const languageLinks = createLanguageLinks(
         </main>
       </div>
     </LanguageProvider>
+
     <script>
+      // Cargar traducciones en el cliente
+      import {
+        loadTranslations,
+        preloadAllTranslations,
+      } from "@/lib/translations";
+
+      document.addEventListener("DOMContentLoaded", () => {
+        // Iniciar carga de todas las traducciones
+        preloadAllTranslations();
+      });
+
       if (!localStorage.getItem("theme")) {
         localStorage.setItem("theme", "dark");
         document.documentElement.classList.add("dark");
