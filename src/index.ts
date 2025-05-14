@@ -6,7 +6,7 @@
  *
  * @author hkxdv
  * @license MIT
- * @version 2.1.1
+ * @version 2.1.4
  */
 
 // Imports

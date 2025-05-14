@@ -1,7 +1,7 @@
 {
   "name": "@hkxdv/astro-shade-dx-template",
   "type": "module",
-  "version": "2.1.1",
+  "version": "2.1.4",
   "description": "Astro template with React, shadcn/ui, Bun, Biome & ESLint. Pre-configured TypeScript, Tailwind CSS, dark/light themes, and optimized DX. Run directly with 'bunx @hkxdv/astro-shade-dx-template' without installation.",
   "author": {
     "name": "Gera Schz",
