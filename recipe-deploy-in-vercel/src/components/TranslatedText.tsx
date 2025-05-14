@@ -1,4 +1,4 @@
-import { memo, type FC } from "react";
+import { memo, useState, useEffect, type FC } from "react";
 import { useTranslation, getTranslation } from "@/lib/translations";
 import type { SupportedLocale } from "@/contexts/LanguageContext";
 import { DEFAULT_LOCALE } from "@/contexts/LanguageContext";
@@ -37,6 +37,11 @@ function replacePlaceholders(
 }
 
 /**
+ * Verifica si estamos en el navegador
+ */
+const isBrowser = typeof window !== "undefined";
+
+/**
  * Componente para mostrar texto traducido según el idioma actual
  *
  * @param {Object} props - Propiedades del componente
@@ -50,15 +55,18 @@ const TranslatedText: FC<TranslatedTextProps> = ({
   values,
   forcedLocale,
 }) => {
-  // Si hay forcedLocale, usar directamente getTranslation
-  if (forcedLocale) {
-    const rawText = getTranslation(textKey, forcedLocale);
+  // En el servidor, o con forcedLocale, no hay problemas de hidratación
+  // Por lo tanto, podemos renderizar directamente
+  if (!isBrowser || forcedLocale) {
+    const rawText = getTranslation(textKey, forcedLocale || DEFAULT_LOCALE);
     const finalText = replacePlaceholders(rawText, values);
     return <>{finalText}</>;
   }
 
-  // Si no hay forcedLocale, usar el contexto via useTranslation
-  const { t, language } = useTranslation();
+  // En el cliente, usar el hook de useTranslation que obtiene el idioma del contexto
+  const { t } = useTranslation();
+
+  // Mostrar directamente el texto traducido
   const rawText = t(textKey);
   const finalText = replacePlaceholders(rawText, values);
 
