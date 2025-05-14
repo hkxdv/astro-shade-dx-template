@@ -9,7 +9,16 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
   },
+
   integrations: [react()],
   output: "server",
   adapter: vercel(),
+
+  i18n: {
+    locales: ["es", "en"],
+    defaultLocale: "es",
+    routing: {
+      prefixDefaultLocale: true,
+    },
+  },
 });
