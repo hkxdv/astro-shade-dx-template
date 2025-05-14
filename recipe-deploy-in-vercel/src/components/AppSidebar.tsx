@@ -20,6 +20,7 @@ import {
   Settings,
   FileImage,
 } from "lucide-react";
+import { useTranslation } from "@/lib/translations";
 
 import {
   Collapsible,
@@ -30,8 +31,8 @@ import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
-  SidebarGroupContent,
   SidebarGroupLabel,
+  SidebarGroupContent,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -49,15 +50,26 @@ import { cn } from "@/lib/utils";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import "@/styles/sidebar.css";
 
+// Tipos para la estructura del proyecto
+type ProjectInfo = { name: string; version: string };
+type FileItem = string;
+interface FolderItem extends Array<string | FileItem | FolderItem> {
+  0: string; // El primer elemento siempre es el nombre de la carpeta
+}
+type TreeItem = FileItem | FolderItem;
+
 /**
  * Datos de la estructura del proyecto para mostrar en el sidebar
  * Incluye información del proyecto y árbol de archivos
  */
-const projectData = {
+const projectData: {
+  projectInfo: ProjectInfo[];
+  tree: TreeItem[];
+} = {
   projectInfo: [
     {
-      name: "Astro Shade DX",
-      version: "1.0.2",
+      name: "Demo",
+      version: "2.1.2",
     },
   ],
   tree: [
@@ -93,10 +105,21 @@ const projectData = {
         "TranslatedText.tsx",
         "TechLogos.tsx",
       ],
+      ["contexts", "LanguageContext.tsx"],
       ["layouts", "Layout.astro"],
-      ["pages", "index.astro", "ssr-demo.astro", "404.astro"],
+      [
+        "locales",
+        ["es", "common.json", "features.json"],
+        ["en", "common.json", "features.json"],
+      ],
+      [
+        "pages",
+        ["[lang]", "index.astro", "404.astro"],
+        "index.astro",
+        "404.astro",
+      ],
       ["hooks", "useMobile.ts", "useMediaQuery.ts"],
-      ["lib", "i18n.ts", "utils.ts", "translations.ts", "theme.ts"],
+      ["lib", "i18n-utils.ts", "utils.ts", "translations.ts", "theme.ts"],
       ["styles", "global.css", "sidebar.css"],
     ],
     ["public", "favicon.svg"],
@@ -104,7 +127,6 @@ const projectData = {
     "components.json",
     "package.json",
     "tsconfig.json",
-    "README.md",
   ],
 };
 
@@ -119,6 +141,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   // Inicializar con un valor predeterminado para evitar errores de hydration
   const [mounted, setMounted] = React.useState(false);
   const isMobile = useMediaQuery("(max-width: 768px)");
+  const { t, language } = useTranslation();
 
   // Estado para controlar si el sidebar está colapsado
   const [collapsed, setCollapsed] = React.useState(false);
@@ -142,7 +165,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     return (
       <Sidebar {...props} className="w-[240px]">
         <SidebarContent className="bg-background pt-3 overflow-hidden">
-          <div className="animate-pulse h-full bg-muted/20 rounded-md"></div>
+          <div className="animate-pulse h-full bg-muted/20 rounded-md" />
         </SidebarContent>
         <SidebarRail />
       </Sidebar>
@@ -170,12 +193,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 collapsed && "opacity-0 md:group-hover:opacity-100"
               )}
             >
-              Proyecto
+              {t ? t("sidebar.project") : "Proyecto"}
             </SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                {projectData.projectInfo.map((item, index) => (
-                  <SidebarMenuItem key={index}>
+                {projectData.projectInfo.map((item) => (
+                  <SidebarMenuItem key={item.name}>
                     <SidebarMenuButton
                       className={cn(
                         "bg-muted/30 hover:bg-muted/50 transition-colors",
@@ -211,12 +234,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 collapsed && "opacity-0 md:group-hover:opacity-100"
               )}
             >
-              Archivos
+              {t ? t("sidebar.files") : "Archivos"}
             </SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu className="file-tree">
-                {projectData.tree.map((item, index) => (
-                  <Tree key={index} item={item} collapsed={collapsed} />
+                {projectData.tree.map((item, i) => (
+                  <Tree
+                    key={typeof item === "string" ? item : item[0] + i}
+                    item={item}
+                    collapsed={collapsed}
+                  />
                 ))}
               </SidebarMenu>
             </SidebarGroupContent>
@@ -240,48 +267,70 @@ function getFileIcon(filename: string): React.ReactElement {
     // Archivos Astro con iconos específicos
     if (filename === "index.astro") {
       return <Home className="w-4 h-4 text-primary flex-shrink-0" />;
-    } else if (filename.includes("Layout")) {
+    }
+
+    if (filename.includes("Layout")) {
       return (
         <LayoutTemplate className="w-4 h-4 text-orange-400 flex-shrink-0" />
       );
-    } else if (filename.includes("Section")) {
-      return <Layout className="w-4 h-4 text-purple-400 flex-shrink-0" />;
-    } else if (filename === "404.astro") {
-      return <Undo2 className="w-4 h-4 text-red-400 flex-shrink-0" />;
-    } else {
-      return <FileCode className="w-4 h-4 text-amber-400 flex-shrink-0" />;
     }
-  } else if (filename.endsWith(".tsx") || filename.endsWith(".jsx")) {
+
+    if (filename.includes("Section")) {
+      return <Layout className="w-4 h-4 text-purple-400 flex-shrink-0" />;
+    }
+
+    if (filename === "404.astro") {
+      return <Undo2 className="w-4 h-4 text-red-400 flex-shrink-0" />;
+    }
+
+    return <FileCode className="w-4 h-4 text-amber-400 flex-shrink-0" />;
+  }
+
+  if (filename.endsWith(".tsx") || filename.endsWith(".jsx")) {
     if (filename.startsWith("use")) {
       return <Link2 className="w-4 h-4 text-pink-400 flex-shrink-0" />;
-    } else if (filename.includes("Theme")) {
-      return <Palette className="w-4 h-4 text-yellow-400 flex-shrink-0" />;
-    } else if (filename.includes("Tech")) {
-      return <Laptop className="w-4 h-4 text-indigo-400 flex-shrink-0" />;
-    } else {
-      return <Code className="w-4 h-4 text-indigo-400 flex-shrink-0" />;
     }
-  } else if (filename.endsWith(".ts")) {
+
+    if (filename.includes("Theme")) {
+      return <Palette className="w-4 h-4 text-yellow-400 flex-shrink-0" />;
+    }
+
+    if (filename.includes("Tech")) {
+      return <Laptop className="w-4 h-4 text-indigo-400 flex-shrink-0" />;
+    }
+
+    return <Code className="w-4 h-4 text-indigo-400 flex-shrink-0" />;
+  }
+
+  if (filename.endsWith(".ts")) {
     if (filename.includes("i18n") || filename.includes("translation")) {
       return <Globe className="w-4 h-4 text-sky-400 flex-shrink-0" />;
-    } else if (filename.includes("api")) {
-      return <Server className="w-4 h-4 text-emerald-400 flex-shrink-0" />;
-    } else {
-      return <FileCode className="w-4 h-4 text-blue-400 flex-shrink-0" />;
     }
-  } else if (filename.endsWith(".css")) {
+
+    if (filename.includes("api")) {
+      return <Server className="w-4 h-4 text-emerald-400 flex-shrink-0" />;
+    }
+
+    return <FileCode className="w-4 h-4 text-blue-400 flex-shrink-0" />;
+  }
+
+  if (filename.endsWith(".css")) {
     return <Palette className="w-4 h-4 text-sky-400 flex-shrink-0" />;
-  } else if (filename.endsWith(".md") || filename.endsWith(".mdx")) {
+  }
+
+  if (filename.endsWith(".md") || filename.endsWith(".mdx")) {
     return <BookOpen className="w-4 h-4 text-slate-400 flex-shrink-0" />;
-  } else if (filename.endsWith(".json")) {
+  }
+
+  if (filename.endsWith(".json")) {
     return <Settings className="w-4 h-4 text-slate-400 flex-shrink-0" />;
-  } else if (
-    filename.endsWith(".config.mjs") ||
-    filename.endsWith(".config.js") ||
-    filename.endsWith(".config.cjs")
-  ) {
+  }
+
+  if (filename.endsWith(".config.mjs") || filename.endsWith(".json")) {
     return <Settings className="w-4 h-4 text-emerald-400 flex-shrink-0" />;
-  } else if (filename.endsWith(".svg")) {
+  }
+
+  if (filename.endsWith(".svg")) {
     return <FileImage className="w-4 h-4 text-purple-400 flex-shrink-0" />;
   }
 
@@ -321,6 +370,10 @@ function getFolderIcon(foldername: string): React.ReactElement {
       return <Globe className="w-4 h-4 text-slate-400 flex-shrink-0" />;
     case "sections":
       return <Layout className="w-4 h-4 text-indigo-400 flex-shrink-0" />;
+    case "locales":
+      return <Globe className="w-4 h-4 text-sky-400 flex-shrink-0" />;
+    case "[lang]":
+      return <Globe className="w-4 h-4 text-sky-400 flex-shrink-0" />;
     default:
       return <Folder className="w-4 h-4 text-yellow-400 flex-shrink-0" />;
   }
@@ -330,7 +383,7 @@ function getFolderIcon(foldername: string): React.ReactElement {
  * Componente recursivo para renderizar un árbol de archivos y carpetas
  *
  * @param {Object} props - Propiedades del componente
- * @param {string | any[]} props.item - Ítem a renderizar (nombre de archivo o array con carpeta y contenido)
+ * @param {TreeItem} props.item - Ítem a renderizar (nombre de archivo o array con carpeta y contenido)
  * @param {boolean} props.collapsed - Si el sidebar está colapsado
  * @returns {React.ReactElement} Nodo del árbol de archivos
  */
@@ -338,7 +391,7 @@ function Tree({
   item,
   collapsed,
 }: {
-  item: string | any[];
+  item: TreeItem;
   collapsed: boolean;
 }): React.ReactElement {
   const [name, ...items] = Array.isArray(item) ? item : [item];
@@ -451,8 +504,14 @@ function Tree({
               collapsed ? "hidden md:group-hover:block" : ""
             )}
           >
-            {items.map((subItem, index) => (
-              <Tree key={index} item={subItem} collapsed={collapsed} />
+            {items.map((subItem, i) => (
+              <Tree
+                key={
+                  typeof subItem === "string" ? subItem : `${subItem[0]}-${i}`
+                }
+                item={subItem}
+                collapsed={collapsed}
+              />
             ))}
           </SidebarMenuSub>
         </CollapsibleContent>

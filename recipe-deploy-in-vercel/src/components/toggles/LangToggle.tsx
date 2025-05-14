@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Languages } from "lucide-react";
-import { applyLanguage, type Language } from "@/lib/i18n";
+import { getTranslation } from "@/lib/translations";
+import type { SupportedLocale } from "@/contexts/LanguageContext";
 
 import { Button } from "@/ui/button";
 import {
@@ -10,6 +11,16 @@ import {
   DropdownMenuTrigger,
 } from "@/ui/dropdown-menu";
 
+interface LanguageLink {
+  lang: string;
+  url: string;
+}
+
+interface LangToggleProps {
+  languageLinks: LanguageLink[];
+  currentSelectedLang: SupportedLocale;
+}
+
 /**
  * Componente para cambiar el idioma de la aplicación
  * Muestra un botón con ícono de idiomas que al hacer clic despliega un menú con opciones
@@ -17,37 +28,34 @@ import {
  *
  * @returns {JSX.Element} Componente de toggle de idioma
  */
-export function LangToggle() {
-  const [language, setLanguage] = React.useState<Language>("es");
-
-  /**
-   * Efecto para detectar el idioma actual al montar el componente
-   * y configurar listeners para eventos de cambio de idioma
-   */
-  React.useEffect(() => {
-    // Obtener el idioma actual del documento cuando el componente se monta
-    const currentLang = document.documentElement.getAttribute("lang");
-    setLanguage((currentLang === "en" ? "en" : "es") as Language);
-
-    // Escuchar cambios de idioma
-    const handleLanguageChange = (e: Event) => {
-      const customEvent = e as CustomEvent;
-      setLanguage(customEvent.detail.language);
-    };
-
-    document.addEventListener("languagechange", handleLanguageChange);
-    return () => {
-      document.removeEventListener("languagechange", handleLanguageChange);
-    };
-  }, []);
-
+export function LangToggle({
+  languageLinks,
+  currentSelectedLang,
+}: LangToggleProps) {
   /**
    * Maneja el cambio de idioma cuando el usuario selecciona una opción
-   * @param {Language} newLang - El nuevo idioma seleccionado
+   * @param {string} targetUrl - La URL correspondiente al idioma seleccionado
    */
-  const handleLanguageChange = (newLang: Language) => {
-    setLanguage(newLang);
-    applyLanguage(newLang);
+  const handleLanguageChange = (targetUrl: string) => {
+    // Preservar parámetros de consulta al cambiar idioma
+    const currentParams = new URLSearchParams(window.location.search);
+    const targetUrlObj = new URL(targetUrl);
+
+    // Transferir los parámetros actuales a la nueva URL
+    for (const [key, value] of currentParams.entries()) {
+      targetUrlObj.searchParams.append(key, value);
+    }
+
+    // Navegar a la URL del idioma seleccionado con los parámetros preservados
+    window.location.href = targetUrlObj.toString();
+  };
+
+  const getLangName = (langCode: string): string => {
+    if (langCode === "es")
+      return getTranslation("language.spanish", currentSelectedLang);
+    if (langCode === "en")
+      return getTranslation("language.english", currentSelectedLang);
+    return langCode; // Fallback al código si no se reconoce
   };
 
   return (
@@ -55,22 +63,21 @@ export function LangToggle() {
       <DropdownMenuTrigger asChild>
         <Button variant="outline" size="icon" className="ml-2">
           <Languages className="h-[1.2rem] w-[1.2rem]" />
-          <span className="sr-only">Cambiar idioma</span>
+          <span className="sr-only">
+            {getTranslation("language.toggle", currentSelectedLang)}
+          </span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem
-          onClick={() => handleLanguageChange("es")}
-          className={language === "es" ? "bg-accent" : ""}
-        >
-          Español
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() => handleLanguageChange("en")}
-          className={language === "en" ? "bg-accent" : ""}
-        >
-          English
-        </DropdownMenuItem>
+        {languageLinks.map((link) => (
+          <DropdownMenuItem
+            key={link.lang}
+            onClick={() => handleLanguageChange(link.url)}
+            className={currentSelectedLang === link.lang ? "bg-accent" : ""}
+          >
+            {getLangName(link.lang)}
+          </DropdownMenuItem>
+        ))}
       </DropdownMenuContent>
     </DropdownMenu>
   );

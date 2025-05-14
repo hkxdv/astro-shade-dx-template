@@ -1,6 +1,12 @@
 import React from "react";
 import { AppSidebar } from "@/components/AppSidebar";
 import { SidebarProvider } from "@/ui/sidebar";
+import { LanguageProvider } from "@/contexts/LanguageContext";
+import type { SupportedLocale } from "@/contexts/LanguageContext";
+
+interface SidebarWrapperProps {
+  locale: SupportedLocale;
+}
 
 /**
  * Componente que envuelve el sidebar de la aplicación con el contexto necesario
@@ -8,10 +14,12 @@ import { SidebarProvider } from "@/ui/sidebar";
  *
  * @returns {JSX.Element} Componente sidebar con su contexto
  */
-export function SidebarWrapper() {
+export function SidebarWrapper({ locale }: SidebarWrapperProps) {
   return (
-    <SidebarProvider>
-      <AppSidebar />
-    </SidebarProvider>
+    <LanguageProvider value={locale}>
+      <SidebarProvider>
+        <AppSidebar />
+      </SidebarProvider>
+    </LanguageProvider>
   );
 }
