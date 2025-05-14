@@ -14,15 +14,38 @@ import {
   type NestedTranslations,
 } from "@/lib/i18n-utils";
 
+// Cargar traducciones estáticas para resolver problemas de hidratación
+import commonES from "@/locales/es/common.json";
+import featuresES from "@/locales/es/features.json";
+import commonEN from "@/locales/en/common.json";
+import featuresEN from "@/locales/en/features.json";
+
+// Inicialización de traducciones estáticas para SSR
+const STATIC_TRANSLATIONS: Record<string, unknown> = {
+  es: { ...commonES, ...featuresES },
+  en: { ...commonEN, ...featuresEN },
+};
+
 /**
  * Clase para gestionar las traducciones con caché optimizada
  */
 class TranslationManager {
   // Caché para las traducciones cargadas por idioma
-  private translations: Record<string, NestedTranslations> = {};
+  private translations: Record<string, unknown> = {
+    // Inicializamos con traducciones estáticas
+    ...STATIC_TRANSLATIONS,
+  };
 
   // Caché para traducciones específicas de pares idioma:clave
   private translationValues: Record<string, string> = {};
+
+  // Constructor que inicia carga de traducciones por defecto
+  constructor() {
+    // Iniciar carga de traducciones para el idioma por defecto
+    if (typeof window !== "undefined") {
+      this.loadLanguage(DEFAULT_LOCALE).catch(console.error);
+    }
+  }
 
   /**
    * Verifica si un idioma está cargado en la caché
@@ -94,10 +117,6 @@ class TranslationManager {
           typeof result !== "object" ||
           !(k in (result as Record<string, unknown>))
         ) {
-          if (isBrowser()) {
-            console.warn(`Translation key not found: ${key} in ${language}`);
-          }
-
           // Si no existe en el idioma solicitado, intentar con el idioma por defecto
           if (language !== DEFAULT_LOCALE) {
             return this.getTranslation(key, DEFAULT_LOCALE);
@@ -113,14 +132,9 @@ class TranslationManager {
         return result;
       }
 
-      if (isBrowser()) {
-        console.warn(`No translation found for: ${key}`);
-      }
-
       return key; // Fallback final
     } catch (error) {
       // En caso de error, devolver la clave original
-      console.error(`Error al obtener traducción para: ${key}`, error);
       return key;
     }
   }
@@ -142,6 +156,16 @@ const translationManager = new TranslationManager();
  */
 const isBrowser = () =>
   typeof window !== "undefined" && typeof document !== "undefined";
+
+/**
+ * Precarga traducciones para todos los idiomas soportados
+ */
+export function preloadAllTranslations() {
+  const locales = ["es", "en"];
+  for (const locale of locales) {
+    translationManager.loadLanguage(locale).catch(console.error);
+  }
+}
 
 /**
  * Carga dinámicamente las traducciones para un idioma si no están en caché
