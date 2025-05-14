@@ -60,15 +60,15 @@ export function generateLocalePaths() {
  * Tipo para módulos de traducción importados dinámicamente
  */
 interface TranslationModule {
-  default: Record<string, string | Record<string, string>>;
+  default: Record<string, unknown>;
 }
 
 /**
- * Tipo para traducciones anidadas
+ * Tipo para traducciones anidadas que permite múltiples niveles
  */
 export type NestedTranslations = Record<
   string,
-  string | Record<string, string>
+  string | Record<string, unknown>
 >;
 
 /**
@@ -80,24 +80,15 @@ export async function getLocaleTranslations(
   locale: string
 ): Promise<NestedTranslations> {
   try {
-    // Importamos de forma dinámica
-    const modules = import.meta.glob<TranslationModule>(
-      "/src/locales/*/*.json"
-    );
+    // Carga manual de archivos de traducción
+    const commonModule = await import(`../locales/${locale}/common.json`);
+    const featuresModule = await import(`../locales/${locale}/features.json`);
 
-    // Filtramos solo los del idioma solicitado
-    const localeModules = Object.entries(modules).filter(([key]) =>
-      key.includes(`/locales/${locale}/`)
-    );
-
-    // Cargamos todos los módulos y combinamos
-    const translations: NestedTranslations = {};
-    for (const [path, importModule] of localeModules) {
-      const module = await importModule();
-      Object.assign(translations, module.default);
-    }
-
-    return translations;
+    // Combinamos todas las traducciones
+    return {
+      ...commonModule.default,
+      ...featuresModule.default,
+    };
   } catch (error) {
     console.error(`Error cargando traducciones para ${locale}:`, error);
     return {};

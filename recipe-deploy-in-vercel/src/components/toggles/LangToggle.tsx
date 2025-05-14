@@ -39,7 +39,9 @@ export function LangToggle({
   const handleLanguageChange = (targetUrl: string) => {
     // Preservar parámetros de consulta al cambiar idioma
     const currentParams = new URLSearchParams(window.location.search);
-    const targetUrlObj = new URL(targetUrl);
+    const targetUrlObj = new URL(targetUrl, window.location.origin);
+
+    console.log("Cambiando a URL:", targetUrlObj.toString());
 
     // Transferir los parámetros actuales a la nueva URL
     for (const [key, value] of currentParams.entries()) {
