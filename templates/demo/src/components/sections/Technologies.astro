@@ -1,0 +1,47 @@
+---
+import { TechLogos } from "@/components/TechLogos";
+import { TranslatedText } from "@/components/TranslatedText";
+import type { SupportedLocale } from "@/contexts/LanguageContext";
+
+// Obtener el idioma actual
+const currentLang = Astro.currentLocale as SupportedLocale;
+---
+
+<section class="space-y-6 animate-fadeIn animation-delay-100">
+  <h2
+    class="text-2xl md:text-3xl font-bold text-center animate-fadeInUp animation-delay-200"
+  >
+    <TranslatedText
+      textKey="sections.technologies.title"
+      client:load
+      forcedLocale={currentLang}
+    />
+  </h2>
+  <div
+    class="bg-muted/30 p-6 md:p-8 rounded-lg tech-logos-container animate-fadeInUp animation-delay-300"
+  >
+    <TechLogos client:load />
+  </div>
+</section>
+
+<style>
+  .tech-logos-container {
+    position: relative;
+    border: 1px solid rgba(var(--border), 0.2);
+    transition: transform 0.3s ease;
+  }
+
+  .tech-logos-container:hover {
+    transform: scale(1.01);
+  }
+
+  @media (prefers-reduced-motion) {
+    .tech-logos-container {
+      transition: none;
+    }
+
+    .tech-logos-container:hover {
+      transform: none;
+    }
+  }
+</style>

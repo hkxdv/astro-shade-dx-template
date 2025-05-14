@@ -1,0 +1,53 @@
+---
+// Este archivo maneja las solicitudes 404 a nivel global
+// Redirigirá al usuario a la versión localizada de la página 404
+import { getSupportedLocales, getDefaultLocale } from "@/lib/i18n-utils";
+
+const supportedLocales = getSupportedLocales();
+const defaultLocale = getDefaultLocale();
+
+/**
+ * Extrae el idioma preferido del encabezado Accept-Language
+ * @param {string | null} acceptLanguageHeader - Encabezado Accept-Language del navegador
+ * @param {string[]} supportedLocales - Idiomas soportados por la aplicación
+ * @param {string} defaultLocale - Idioma por defecto a usar si no se encuentra una coincidencia
+ * @returns {string} Idioma preferido detectado o el idioma por defecto
+ */
+function detectPreferredLanguage(
+  acceptLanguageHeader: string | null,
+  supportedLocales: string[],
+  defaultLocale: string
+): string {
+  if (!acceptLanguageHeader) return defaultLocale;
+
+  const languages = acceptLanguageHeader.split(",").map((lang) => {
+    const parts = lang.split(";")[0].toLowerCase().split("-");
+    return parts[0];
+  });
+
+  for (const lang of languages) {
+    if (supportedLocales.includes(lang)) {
+      return lang;
+    }
+  }
+
+  return defaultLocale;
+}
+
+// Intentar obtener el idioma preferido del encabezado Accept-Language
+const acceptLanguageHeader = Astro.request.headers.get("accept-language");
+const preferredLanguage = detectPreferredLanguage(
+  acceptLanguageHeader,
+  supportedLocales,
+  defaultLocale
+);
+---
+
+<meta http-equiv="refresh" content={`0;url=/${preferredLanguage}/404`} />
+<script define:vars={{ preferredLanguage }}>
+  // También redirigir mediante JavaScript como fallback si la meta refresh falla o es lenta.
+  // Esto es principalmente para el caso de que el navegador no procese la meta refresh inmediatamente.
+  if (window.location.pathname !== `/${preferredLanguage}/404`) {
+    window.location.href = `/${preferredLanguage}/404`;
+  }
+</script>

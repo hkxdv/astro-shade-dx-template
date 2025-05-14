@@ -16,7 +16,8 @@
       "@/toggles/*": ["./src/components/toggles/*"],
       "@/sections/*": ["./src/components/sections/*"],
       "@/utils/*": ["./src/utils/*"],
-      "@/types/*": ["./src/types/*"]
+      "@/types/*": ["./src/types/*"],
+      "@/locales/*": ["./src/locales/*"]
     },
     "jsx": "react-jsx",
     "jsxImportSource": "react"

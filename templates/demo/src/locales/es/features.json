@@ -1,0 +1,32 @@
+{
+  "features": {
+    "performance": {
+      "title": "Desarrollo y Ejecución Rápidos",
+      "description": "Construido sobre la arquitectura MPA de Astro con hidratación parcial y Bun como runtime de JavaScript ultrarrápido para un rendimiento óptimo."
+    },
+    "components": {
+      "title": "Componentes UI Modernos",
+      "description": "Combina shadcn/ui con Tailwind CSS y React para interfaces hermosas, accesibles y completamente personalizables."
+    },
+    "multilingual": {
+      "title": "Preparado para Internacionalización",
+      "description": "Sistema i18n dinámico con soporte para múltiples idiomas a través de una arquitectura modular basada en JSON."
+    },
+    "developer": {
+      "title": "Experiencia de Desarrollo",
+      "description": "Integración con TypeScript y estructura de proyecto organizada para mayor productividad."
+    },
+    "tech": {
+      "title": "Stack Moderno Completo",
+      "description": "Integración lista para usar de Astro, React, Bun, Tailwind CSS y shadcn/ui para un desarrollo rápido de aplicaciones."
+    },
+    "themes": {
+      "title": "Temas Claro/Oscuro",
+      "description": "Sistema de temas incorporado con detección automática de preferencias del usuario y configuración persistente."
+    },
+    "deployment": {
+      "title": "Despliegue en Vercel",
+      "description": "Configuración optimizada para Vercel con soporte SSR, proporcionando un entorno de producción rápido y confiable."
+    }
+  }
+}

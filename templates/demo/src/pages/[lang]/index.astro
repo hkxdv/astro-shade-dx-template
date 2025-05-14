@@ -1,0 +1,62 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import HeroSection from "@/sections/Hero.astro";
+import TechnologiesSection from "@/sections/Technologies.astro";
+import FeaturesSection from "@/sections/Features.astro";
+import SSRBanner from "@/sections/SSRBanner.astro";
+import Footer from "@/sections/Footer.astro";
+import { generateLocalePaths } from "@/lib/i18n-utils";
+import { preloadAllTranslations, loadTranslations } from "@/lib/translations";
+
+// Establecer prerender a true para generar las páginas estáticas durante la compilación
+export const prerender = true;
+
+// Validación del parámetro lang en la URL usando la función dinámica
+export function getStaticPaths() {
+  return generateLocalePaths();
+}
+
+const { lang } = Astro.params;
+
+// Cargar traducciones para el idioma actual
+await loadTranslations(lang as string);
+
+const title =
+  lang === "es"
+    ? "Astro Shade DX - Plantilla Moderna"
+    : "Astro Shade DX - Modern Template";
+const description =
+  lang === "es"
+    ? "Plantilla moderna con Astro + shadcn/ui + Bun para aplicaciones rápidas con excelente experiencia de desarrollo"
+    : "Modern template with Astro + shadcn/ui + Bun for fast applications with excellent developer experience.";
+---
+
+<Layout title={title} description={description}>
+  <div class="space-y-10 md:space-y-16">
+    <HeroSection />
+    <SSRBanner />
+    <TechnologiesSection />
+    <FeaturesSection />
+    <Footer showMadeWith={true} />
+  </div>
+</Layout>
+
+<script>
+  /**
+   * Script para la inicialización del tema y asegurar que traducciones estén cargadas
+   * Se ejecuta en el cliente cuando la página se carga
+   */
+
+  import { getThemePreference, setupThemeObserver } from "@/lib/theme";
+  import { preloadAllTranslations } from "@/lib/translations";
+
+  // Configurar tema inicial
+  const isDark = getThemePreference() === "dark";
+  document.documentElement.classList[isDark ? "add" : "remove"]("dark");
+
+  // Configurar observadores de tema
+  setupThemeObserver();
+
+  // Asegurar que todas las traducciones estén cargadas
+  preloadAllTranslations();
+</script>

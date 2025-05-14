@@ -1,0 +1,73 @@
+{
+  "appName": "Astro Shade DX Template - Demo",
+  "description": "Modern frontend template combining Astro + React + Tailwind CSS + shadcn/ui + Bun for high-performance websites with exceptional developer experience.",
+  "common": {
+    "loading": "Loading..."
+  },
+  "theme": {
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System",
+    "toggle": "Toggle theme",
+    "optionLight": "Light",
+    "optionDark": "Dark",
+    "optionSystem": "System"
+  },
+  "language": {
+    "spanish": "Spanish",
+    "english": "English",
+    "toggle": "Toggle language"
+  },
+  "navigation": {
+    "home": "Home",
+    "components": "Components",
+    "themes": "Themes",
+    "settings": "Settings",
+    "docs": "Documentation",
+    "examples": "Examples"
+  },
+  "footer": {
+    "madeWith": "Made with",
+    "and": "and"
+  },
+  "banner": {
+    "ssr": {
+      "title": "Server Rendering",
+      "description": "This project is configured for deployment on Vercel using the @astrojs/vercel adapter with SSR support."
+    }
+  },
+  "error404": {
+    "title": "Page not found",
+    "subtitle": "404",
+    "description": "Sorry, the page you are looking for doesn't exist or has been moved.",
+    "backToHome": "Home"
+  },
+  "sections": {
+    "features": {
+      "title": "Key Features"
+    },
+    "technologies": {
+      "title": "Core Technologies"
+    },
+    "vercel": {
+      "title": "Deploy on Vercel",
+      "description": "Optimized configuration for deployment on Vercel with support for SSR, Edge Functions and automatic scaling, offering a fast and reliable user experience."
+    },
+    "hero": {
+      "createProject": "Create a project",
+      "withOptions": "With options:",
+      "availableOptions": "Available options:",
+      "demoTemplate": "Full-featured template with components (This project)",
+      "baseTemplate": "Essential minimal template",
+      "eslintOption": "Configure ESLint + Prettier",
+      "biomeOption": "Configure Biome (recommended)"
+    }
+  },
+  "sidebar": {
+    "project": "Project",
+    "files": "Files",
+    "components": "Components",
+    "themes": "Themes",
+    "settings": "Settings"
+  }
+}
