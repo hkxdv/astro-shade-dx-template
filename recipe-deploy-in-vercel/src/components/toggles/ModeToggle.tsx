@@ -1,8 +1,9 @@
 import * as React from "react";
 import { Moon, Sun } from "lucide-react";
 import { applyTheme } from "@/lib/theme";
-import { useTranslation, getTranslation } from "@/lib/translations";
+import { getTranslation } from "@/lib/translations";
 import type { SupportedLocale } from "@/contexts/LanguageContext";
+import { DEFAULT_LOCALE } from "@/contexts/LanguageContext";
 
 import { Button } from "@/ui/button";
 import {
@@ -27,9 +28,9 @@ export function ModeToggle({ forcedLocale }: ModeToggleProps) {
   const [theme, setThemeState] = React.useState<"light" | "dark" | "system">(
     "light"
   );
-  const { t, language: contextLanguage } = useTranslation();
 
-  const effectiveLocale = forcedLocale || contextLanguage || "es";
+  // Usamos directamente forcedLocale o el valor por defecto
+  const effectiveLocale = forcedLocale || DEFAULT_LOCALE;
 
   /**
    * Efecto para detectar el tema actual al montar el componente
@@ -46,6 +47,7 @@ export function ModeToggle({ forcedLocale }: ModeToggleProps) {
     applyTheme(theme);
   }, [theme]);
 
+  // Función para traducir textos usando el idioma efectivo
   const translate = (key: string) => getTranslation(key, effectiveLocale);
 
   return (

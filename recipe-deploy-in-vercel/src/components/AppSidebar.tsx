@@ -20,7 +20,9 @@ import {
   Settings,
   FileImage,
 } from "lucide-react";
-import { useTranslation } from "@/lib/translations";
+import { getTranslation } from "@/lib/translations";
+import { DEFAULT_LOCALE } from "@/contexts/LanguageContext";
+import type { SupportedLocale } from "@/contexts/LanguageContext";
 
 import {
   Collapsible,
@@ -130,6 +132,10 @@ const projectData: {
   ],
 };
 
+interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
+  locale?: SupportedLocale;
+}
+
 /**
  * Componente de barra lateral que muestra información del proyecto,
  * navegación principal y estructura de archivos
@@ -137,11 +143,13 @@ const projectData: {
  * @param {React.ComponentProps<typeof Sidebar>} props - Propiedades para el componente Sidebar
  * @returns {React.ReactElement} Componente de barra lateral
  */
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({ locale, ...props }: AppSidebarProps) {
   // Inicializar con un valor predeterminado para evitar errores de hydration
   const [mounted, setMounted] = React.useState(false);
   const isMobile = useMediaQuery("(max-width: 768px)");
-  const { t, language } = useTranslation();
+
+  // Usar locale directamente o DEFAULT_LOCALE como fallback
+  const effectiveLocale = locale || DEFAULT_LOCALE;
 
   // Estado para controlar si el sidebar está colapsado
   const [collapsed, setCollapsed] = React.useState(false);
@@ -158,6 +166,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       setCollapsed(isMobile);
     }
   }, [isMobile, mounted]);
+
+  // Función para traducir textos
+  const translate = (key: string) => getTranslation(key, effectiveLocale);
 
   // No renderizar contenido responsive hasta que estemos en el cliente
   // para evitar errores de hydration
@@ -193,7 +204,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 collapsed && "opacity-0 md:group-hover:opacity-100"
               )}
             >
-              {t ? t("sidebar.project") : "Proyecto"}
+              {translate("sidebar.project")}
             </SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
@@ -234,7 +245,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 collapsed && "opacity-0 md:group-hover:opacity-100"
               )}
             >
-              {t ? t("sidebar.files") : "Archivos"}
+              {translate("sidebar.files")}
             </SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu className="file-tree">
