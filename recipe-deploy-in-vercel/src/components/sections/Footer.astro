@@ -1,27 +1,35 @@
 ---
 import { TranslatedText } from "@/components/TranslatedText";
+import type { SupportedLocale } from "@/contexts/LanguageContext";
 
 interface Props {
   showMadeWith?: boolean;
 }
 
 const { showMadeWith = false } = Astro.props;
+
+// Obtener el idioma actual
+const currentLang = Astro.currentLocale as SupportedLocale;
 ---
 
 <footer
   class="text-center text-muted-foreground text-sm py-6 animate-fadeIn animation-delay-500"
 >
-  <p>
-    © {new Date().getFullYear()} Astro Shade DX - <TranslatedText
-      textKey="footer.copyright"
-      client:load
-    />
-  </p>
+  <p>Astro Shade DX</p>
   {
     showMadeWith && (
       <p class="mt-2">
-        <TranslatedText textKey="footer.madeWith" client:load /> ❤️{" "}
-        <TranslatedText textKey="footer.and" client:load />{" "}
+        <TranslatedText
+          textKey="footer.madeWith"
+          client:load
+          forcedLocale={currentLang}
+        />{" "}
+        ❤️{" "}
+        <TranslatedText
+          textKey="footer.and"
+          client:load
+          forcedLocale={currentLang}
+        />{" "}
         <a href="https://astro.build" class="text-primary hover:underline">
           Astro
         </a>
