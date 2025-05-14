@@ -1,0 +1,158 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import { Button } from "@/ui/button";
+import { Undo2, Home, ArrowLeft } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/ui/card";
+
+import { Separator } from "@/ui/separator";
+import { TranslatedText } from "@/components/TranslatedText";
+import type { SupportedLocale } from "@/contexts/LanguageContext";
+import { generateLocalePaths } from "@/lib/i18n-utils";
+
+// Establecer prerender a true para generar las páginas estáticas durante la compilación
+export const prerender = true;
+
+// Validación del parámetro lang en la URL
+export function getStaticPaths() {
+  return generateLocalePaths();
+}
+
+const { lang } = Astro.params;
+const currentLang = Astro.currentLocale as SupportedLocale;
+---
+
+<Layout
+  title="Página no encontrada - Astro Shade DX"
+  description="Lo sentimos, la página que buscas no existe o ha sido movida"
+  showSidebar={false}
+>
+  <div class="container max-w-4xl mx-auto px-4 py-8 md:py-16">
+    <Card className="shadow-lg border-primary/10">
+      <CardHeader className="text-center pb-0">
+        <div class="flex justify-center">
+          <div
+            class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-4 animate-pulse"
+          >
+            <Undo2 className="w-8 h-8 text-primary" />
+          </div>
+        </div>
+        <CardTitle
+          className="text-6xl md:text-8xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent animate-gradientFlow"
+        >
+          <TranslatedText
+            textKey="error404.subtitle"
+            client:load
+            forcedLocale={currentLang}
+          />
+        </CardTitle>
+        <CardDescription
+          className="text-2xl md:text-3xl font-semibold mt-4 text-foreground animate-fadeInUp animation-delay-100"
+        >
+          <TranslatedText
+            textKey="error404.title"
+            client:load
+            forcedLocale={currentLang}
+          />
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="pt-6 text-center">
+        <p
+          class="text-muted-foreground text-lg max-w-2xl mx-auto animate-fadeInUp animation-delay-200 mb-8"
+        >
+          <TranslatedText
+            textKey="error404.description"
+            client:load
+            forcedLocale={currentLang}
+          />
+        </p>
+
+        <Separator className="my-8" />
+
+        <div
+          class="flex flex-col sm:flex-row justify-center gap-4 mt-8 animate-fadeInUp animation-delay-300"
+        >
+          <Button variant="default" size="lg" className="gap-2">
+            <ArrowLeft className="w-5 h-5" />
+            <a href={`/${lang}/`} class="w-full">
+              <TranslatedText
+                textKey="error404.backToHome"
+                client:load
+                forcedLocale={currentLang}
+              />
+            </a>
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  </div>
+</Layout>
+
+<style>
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes gradientFlow {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+  @keyframes pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.7;
+    }
+  }
+
+  .animate-fadeIn {
+    animation: fadeIn 0.8s ease-out forwards;
+  }
+
+  .animate-fadeInUp {
+    animation: fadeIn 0.8s ease-out forwards;
+  }
+
+  .animate-gradientFlow {
+    background-size: 200% auto;
+    animation: gradientFlow 8s ease infinite;
+  }
+
+  .animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  .animation-delay-100 {
+    animation-delay: 0.1s;
+  }
+
+  .animation-delay-200 {
+    animation-delay: 0.2s;
+  }
+
+  .animation-delay-300 {
+    animation-delay: 0.3s;
+  }
+</style>

@@ -1,0 +1,13 @@
+---
+// Redirección desde / al idioma por defecto /es/
+import { getDefaultLocale } from "@/lib/i18n-utils";
+
+export const prerender = false;
+
+// Obtener el idioma por defecto dinámicamente
+const defaultLocale = getDefaultLocale();
+
+// Redirigir al idioma por defecto
+Astro.response.status = 302;
+Astro.response.headers.set("Location", `/${defaultLocale}/`);
+---

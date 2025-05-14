@@ -1,0 +1,73 @@
+{
+  "appName": "Astro Shade DX Template - Demo",
+  "description": "Plantilla frontend moderna que combina Astro + React + Tailwind CSS + shadcn/ui + Bun para sitios web de alto rendimiento con experiencia de desarrollo excepcional.",
+  "common": {
+    "loading": "Cargando..."
+  },
+  "theme": {
+    "light": "Claro",
+    "dark": "Oscuro",
+    "system": "Sistema",
+    "toggle": "Cambiar tema",
+    "optionLight": "Claro",
+    "optionDark": "Oscuro",
+    "optionSystem": "Sistema"
+  },
+  "language": {
+    "spanish": "Español",
+    "english": "Inglés",
+    "toggle": "Cambiar idioma"
+  },
+  "navigation": {
+    "home": "Inicio",
+    "components": "Componentes",
+    "themes": "Temas",
+    "settings": "Configuración",
+    "docs": "Documentación",
+    "examples": "Ejemplos"
+  },
+  "footer": {
+    "madeWith": "Hecho con",
+    "and": "y"
+  },
+  "banner": {
+    "ssr": {
+      "title": "Servidor Renderizado",
+      "description": "Este proyecto está configurado para despliegue en Vercel usando el adaptador @astrojs/vercel con soporte SSR."
+    }
+  },
+  "error404": {
+    "title": "Página no encontrada",
+    "subtitle": "404",
+    "description": "Lo sentimos, la página que estás buscando no existe o ha sido movida a otra ubicación.",
+    "backToHome": "Inicio"
+  },
+  "sections": {
+    "features": {
+      "title": "Características Clave"
+    },
+    "technologies": {
+      "title": "Tecnologías Principales"
+    },
+    "vercel": {
+      "title": "Despliegue en Vercel",
+      "description": "Configuración optimizada para despliegue en Vercel con soporte para SSR, Edge Functions y escalado automático, ofreciendo una experiencia de usuario rápida y confiable."
+    },
+    "hero": {
+      "createProject": "Crear un proyecto",
+      "withOptions": "Con opciones:",
+      "availableOptions": "Opciones disponibles:",
+      "demoTemplate": "Plantilla completa con componentes (Este proyecto)",
+      "baseTemplate": "Plantilla mínima esencial",
+      "eslintOption": "Configurar ESLint + Prettier",
+      "biomeOption": "Configurar Biome (recomendado)"
+    }
+  },
+  "sidebar": {
+    "project": "Proyecto",
+    "files": "Archivos",
+    "components": "Componentes",
+    "themes": "Temas",
+    "settings": "Configuración"
+  }
+}

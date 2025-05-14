@@ -1,0 +1,126 @@
+---
+import "@/styles/global.css";
+import { SidebarWrapper } from "@/components/SidebarWrapper";
+import { ModeToggle } from "@/toggles/ModeToggle";
+import { LangToggle } from "@/toggles/LangToggle";
+import { LanguageProvider } from "@/contexts/LanguageContext";
+import { getSupportedLocales } from "@/lib/i18n-utils";
+
+interface Props {
+  title: string;
+  description?: string;
+  showSidebar?: boolean;
+}
+
+const { title, description, showSidebar = true } = Astro.props;
+const currentLang = Astro.currentLocale as string;
+const supportedLocales = getSupportedLocales();
+const currentPath = Astro.url.pathname;
+const baseUrl = Astro.url.origin;
+
+/**
+ * Función utilitaria para crear enlaces de idioma
+ * @param currentPath - Ruta actual
+ * @param currentLang - Idioma actual
+ * @param baseUrl - URL base del sitio
+ * @param supportedLocales - Idiomas soportados
+ * @returns Array de objetos {lang, url} para cada idioma soportado
+ */
+function createLanguageLinks(
+  currentPath: string,
+  currentLang: string,
+  baseUrl: string,
+  supportedLocales: string[]
+) {
+  return supportedLocales.map((locale) => {
+    // Si es la página actual, mantener la ruta pero cambiar el idioma
+    const localePath = currentPath.replace(`/${currentLang}/`, `/${locale}/`);
+    return {
+      lang: locale,
+      url: new URL(localePath, baseUrl).toString(),
+    };
+  });
+}
+
+const languageLinks = createLanguageLinks(
+  currentPath,
+  currentLang,
+  baseUrl,
+  supportedLocales
+);
+---
+
+<!doctype html>
+<html lang={currentLang} class="dark scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    {
+      languageLinks.map((link) => (
+        <link rel="alternate" hreflang={link.lang} href={link.url} />
+      ))
+    }
+  </head>
+  <body class="min-h-screen bg-background font-sans antialiased">
+    <LanguageProvider value={currentLang}>
+      <div class="grid min-h-screen">
+        <!-- Barra lateral / Sidebar -->
+        {
+          showSidebar && (
+            <div class="fixed inset-y-0 left-0 z-10 w-56 md:w-60 lg:w-64">
+              <SidebarWrapper client:load locale={currentLang} />
+            </div>
+          )
+        }
+
+        <!-- Contenido principal / Main content -->
+        <main
+          class={showSidebar
+            ? "pl-56 md:pl-60 lg:pl-64 min-h-screen w-full"
+            : "min-h-screen w-full"}
+        >
+          <div class="p-4 md:p-6 lg:p-8 bg-background">
+            <div class="flex justify-between items-center gap-2 mb-6">
+              <div class="text-sm text-muted-foreground">
+                <a
+                  href={Astro.site
+                    ? new URL(currentLang + "/", Astro.site).pathname
+                    : `/${currentLang}/`}
+                  class="hover:text-primary transition-colors"
+                >
+                  Astro Shade DX
+                </a>
+              </div>
+              <div class="flex items-center gap-2">
+                <LangToggle
+                  client:load
+                  languageLinks={languageLinks}
+                  currentSelectedLang={currentLang}
+                />
+                <ModeToggle client:load forcedLocale={currentLang} />
+              </div>
+            </div>
+
+            <div class="container mx-auto max-w-4xl">
+              <slot />
+            </div>
+          </div>
+        </main>
+      </div>
+    </LanguageProvider>
+    <script>
+      if (!localStorage.getItem("theme")) {
+        localStorage.setItem("theme", "dark");
+        document.documentElement.classList.add("dark");
+      }
+    </script>
+  </body>
+</html>
